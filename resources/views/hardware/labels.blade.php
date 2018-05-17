@@ -52,6 +52,7 @@
     height: 100%;
   }
   img.barcode {
+    width: 95%;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -100,6 +101,21 @@
     {{ $snipeSettings->show_custom_css() }}
   @endif
 
+  div.asset_tag {
+    margin: 5px 0 3px 0;
+    font-weight: bold;
+    font-size: {{ $settings->labels_fontsize * 2.1 }}pt;
+  }
+
+  div.serial {
+    margin-left: 1px;
+  }
+
+  div.contact_text {
+    margin: 7px 0 0 1px;
+    font-size: {{ $settings->labels_fontsize * 0.67 }}pt;
+  }
+
   </style>
 
 @foreach ($assets as $asset)
@@ -113,32 +129,17 @@
       @endif
 
     <div class="qr_text">
-        @if ($settings->qr_text!='')
-        <div class="pull-left">
-            <strong>{{ $settings->qr_text }}</strong>
+        <div class="pull-left asset_tag">
+            {{ $asset->asset_tag }}
+        </div>
+        <div class="pull-left serial">
+            {{ $asset->serial }}
+        </div>
+        <div class="pull-left contact_text">
+            Property of School of Computing, University of Kent
             <br>
+            For assistance please contact cs-syshelp@kent.ac.uk
         </div>
-        @endif
-        @if (($settings->labels_display_company_name=='1') && ($asset->company))
-        <div class="pull-left">
-        	C: {{ $asset->company->name }}
-        </div>
-        @endif
-        @if (($settings->labels_display_name=='1') && ($asset->name!=''))
-        <div class="pull-left">
-            N: {{ $asset->name }}
-        </div>
-        @endif
-        @if (($settings->labels_display_tag=='1') && ($asset->asset_tag!=''))
-        <div class="pull-left">
-            T: {{ $asset->asset_tag }}
-        </div>
-        @endif
-        @if (($settings->labels_display_serial=='1') && ($asset->serial!=''))
-        <div class="pull-left">
-            S: {{ $asset->serial }}
-        </div>
-        @endif
     </div>
 
     @if ((($settings->alt_barcode_enabled=='1') && $settings->alt_barcode!=''))
