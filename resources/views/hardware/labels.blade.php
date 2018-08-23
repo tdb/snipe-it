@@ -61,7 +61,7 @@
  .qr_text {
     width: {{ $qr_txt_size }}in;
     height: {{ $qr_size }}in;
-    padding-top: .10in;
+    padding-top: .01in;
     font-family: arial, helvetica, sans-serif;
     padding-right: .01in;
     overflow: hidden !important;
