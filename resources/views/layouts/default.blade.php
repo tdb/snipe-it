@@ -54,9 +54,7 @@
         }
         @endif
 
-        @if (($snipeSettings) && ($snipeSettings->custom_css!=''))
-            {!! $snipeSettings->show_custom_css() !!}
-        @endif
+
 
     @media (max-width: 400px) {
       .navbar-left {
@@ -68,6 +66,12 @@
       }
     }
     </style>
+
+      @if (($snipeSettings) && ($snipeSettings->custom_css))
+          <style>
+              {!! $snipeSettings->show_custom_css() !!}
+          </style>
+      @endif
 
     <script nonce="{{ csrf_token() }}">
           window.snipeit = {
@@ -534,13 +538,13 @@
                     </a>
 
                     <ul class="treeview-menu">
-                        @can('view', \App\Models\CustomField::class)
+                        @if(Gate::allows('view', App\Models\CustomField::class) || Gate::allows('view', App\Models\CustomFieldset::class))
                             <li {!! (Request::is('fields*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('fields.index') }}">
                                     {{ trans('admin/custom_fields/general.custom_fields') }}
                                 </a>
                             </li>
-                        @endcan
+                        @endif
 
                         @can('view', \App\Models\Statuslabel::class)
                             <li {!! (Request::is('statuslabels*') ? ' class="active"' : '') !!}>

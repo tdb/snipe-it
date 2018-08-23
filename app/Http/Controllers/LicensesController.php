@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AssetFileRequest;
 use Assets;
 use Illuminate\Support\Facades\Session;
 use Input;
@@ -264,31 +265,40 @@ class LicensesController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v1.0]
      * @param Request $request
+     * @param int $licenseId
      * @param int $seatId
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postCheckout(Request $request, $licenseId)
+    public function postCheckout(Request $request, $licenseId, $seatId = null)
     {
 
         // Check that the license is valid
-        if ($license = License::where('id',$licenseId)->first()) {
-
+        if ($license = License::where('id', $licenseId)->first()) {
+            
             // If the license is valid, check that there is an available seat
             if ($license->getAvailSeatsCountAttribute() < 1) {
                 return redirect()->route('licenses.index')->with('error', 'There are no available seats for this license');
             }
-
-            // Get the next available seat for this license
-            $next = $license->freeSeat();
-
-            if (!$next) {
-                return redirect()->route('licenses.index')->with('error', 'There are no available seats for this license');
+            if (!$seatId) {
+                // Get the next available seat for this license
+                $next = $license->freeSeat();
+                if (!$next) {
+                    return redirect()->route('licenses.index')->with('error', 'There are no available seats for this license');
+                }
+                if (!$licenseSeat = LicenseSeat::where('id', '=', $next->id)->first()) {
+                    return redirect()->route('licenses.index')->with('error', 'There are no available seats for this license');
+                }
+            } else {
+                $licenseSeat = LicenseSeat::where('id', '=', $seatId)->first();
+                if (!$licenseSeat) {
+                    return redirect()->route('licenses.index')->with('error', 'License seat is not available for checkout');
+                }
             }
+    
 
-            if (!$licenseSeat = LicenseSeat::where('id', '=', $next->id)->first()) {
-                return redirect()->route('licenses.index')->with('error', 'There are no available seats for this license');
-            }
+            
 
+            
 
             $this->authorize('checkout', $license);
 
@@ -495,7 +505,7 @@ class LicensesController extends Controller
     * @param int $licenseId
     * @return \Illuminate\Http\RedirectResponse
      */
-    public function postUpload(Request $request, $licenseId = null)
+    public function postUpload(AssetFileRequest $request, $licenseId = null)
     {
         $license = License::find($licenseId);
         // the license is valid
@@ -504,18 +514,9 @@ class LicensesController extends Controller
         if (isset($license->id)) {
             $this->authorize('update', $license);
 
-            if (Input::hasFile('licensefile')) {
+            if (Input::hasFile('file')) {
 
-                foreach (Input::file('licensefile') as $file) {
-
-                    $rules = array(
-                    'licensefile' => 'required|mimes:png,gif,jpg,jpeg,doc,docx,pdf,txt,zip,rar,rtf,xml,lic'
-                    );
-                    $validator = Validator::make(array('licensefile'=> $file), $rules);
-
-                    if ($validator->fails()) {
-                         return redirect()->back()->with('error', trans('admin/licenses/message.upload.invalidfiles'));
-                    }
+                foreach (Input::file('file') as $file) {
                     $extension = $file->getClientOriginalExtension();
                     $filename = 'license-'.$license->id.'-'.str_random(8).'-'.str_slug(basename($file->getClientOriginalName(), '.'.$extension)).'.'.$extension;
                     $upload_success = $file->move($destinationPath, $filename);
