@@ -167,6 +167,11 @@
         };
     }
 
+    function hardwareAuditFormatter(value, row) {
+        return '<a href="{{ url('/') }}/hardware/audit/' + row.id + '/" class="btn btn-sm bg-yellow" data-tooltip="true" title="Audit this item">{{ trans('general.audit') }}</a>';
+    }
+
+
     // Make the edit/delete buttons
     function genericActionsFormatter(destination) {
         return function (value,row) {
@@ -435,7 +440,11 @@
     }
 
     function assetTagLinkFormatter(value, row) {
-        return '<a href="{{ url('/') }}/hardware/' + row.asset.id + '"> ' + row.asset.asset_tag + '</a>';
+        if ((row.asset) && (row.asset.id)) {
+            return '<a href="{{ url('/') }}/hardware/' + row.asset.id + '"> ' + row.asset.asset_tag + '</a>';
+        }
+        return '';
+
     }
 
     function assetNameLinkFormatter(value, row) {

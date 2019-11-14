@@ -326,7 +326,7 @@ class SettingsController extends Controller
 
         $setting->modellist_displays = '';
 
-        if (($request->has('show_in_model_list')) && (count($request->input('show_in_model_list')) > 0))
+        if (($request->filled('show_in_model_list')) && (count($request->input('show_in_model_list')) > 0))
         {
             $setting->modellist_displays = implode(',', $request->input('show_in_model_list'));
         }
@@ -482,13 +482,12 @@ class SettingsController extends Controller
                 $setting->two_factor_enabled = null;
             } else {
                 $setting->two_factor_enabled = $request->input('two_factor_enabled');
-
-                # remote user login
-                $setting->login_remote_user_enabled = (int)$request->input('login_remote_user_enabled');
-                $setting->login_common_disabled= (int)$request->input('login_common_disabled');
-                $setting->login_remote_user_custom_logout_url = $request->input('login_remote_user_custom_logout_url');
             }
 
+            # remote user login
+            $setting->login_remote_user_enabled = (int)$request->input('login_remote_user_enabled');
+            $setting->login_common_disabled = (int)$request->input('login_common_disabled');
+            $setting->login_remote_user_custom_logout_url = $request->input('login_remote_user_custom_logout_url');
         }
 
         $setting->pwd_secure_uncommon = (int) $request->input('pwd_secure_uncommon');
@@ -496,7 +495,7 @@ class SettingsController extends Controller
         $setting->pwd_secure_complexity = '';
 
 
-        if ($request->has('pwd_secure_complexity')) {
+        if ($request->filled('pwd_secure_complexity')) {
             $setting->pwd_secure_complexity =  implode('|', $request->input('pwd_secure_complexity'));
         }
 
@@ -795,31 +794,31 @@ class SettingsController extends Controller
 
 
 
-        if ($request->has('labels_display_name')) {
+        if ($request->filled('labels_display_name')) {
             $setting->labels_display_name = 1;
         } else {
             $setting->labels_display_name = 0;
         }
 
-        if ($request->has('labels_display_serial')) {
+        if ($request->filled('labels_display_serial')) {
             $setting->labels_display_serial = 1;
         } else {
             $setting->labels_display_serial = 0;
         }
 
-        if ($request->has('labels_display_tag')) {
+        if ($request->filled('labels_display_tag')) {
             $setting->labels_display_tag = 1;
         } else {
             $setting->labels_display_tag = 0;
 	    }
 
-	    if ($request->has('labels_display_tag')) {
+	    if ($request->filled('labels_display_tag')) {
              $setting->labels_display_tag = 1;
          } else {
              $setting->labels_display_tag = 0;
          }
 
-        if ($request->has('labels_display_model')) {
+        if ($request->filled('labels_display_model')) {
             $setting->labels_display_model = 1;
         } else {
             $setting->labels_display_model = 0;
@@ -866,7 +865,7 @@ class SettingsController extends Controller
         $setting->ldap_server = $request->input('ldap_server');
         $setting->ldap_server_cert_ignore = $request->input('ldap_server_cert_ignore', false);
         $setting->ldap_uname = $request->input('ldap_uname');
-        if (Input::has('ldap_pword')) {
+        if (Input::filled('ldap_pword')) {
             $setting->ldap_pword = Crypt::encrypt($request->input('ldap_pword'));
         }
         $setting->ldap_basedn = $request->input('ldap_basedn');
@@ -908,7 +907,7 @@ class SettingsController extends Controller
     public function getBackups()
     {
 
-        $path = storage_path().'/app/'.config('laravel-backup.backup.name');
+        $path = storage_path().'/app/'.config('backup.backup.name');
 
         $files = array();
 
@@ -984,7 +983,7 @@ class SettingsController extends Controller
     public function downloadFile($filename = null)
     {
         if (!config('app.lock_passwords')) {
-            $path = storage_path().'/app/'.config('laravel-backup.backup.name');
+            $path = storage_path().'/app/'.config('backup.backup.name');
             $file = $path.'/'.$filename;
             if (file_exists($file)) {
                 return Response::download($file);
@@ -1013,7 +1012,7 @@ class SettingsController extends Controller
 
         if (!config('app.lock_passwords')) {
 
-            $path = storage_path().'/app/'.config('laravel-backup.backup.name');
+            $path = storage_path().'/app/'.config('backup.backup.name');
             $file = $path.'/'.$filename;
             if (file_exists($file)) {
                 unlink($file);

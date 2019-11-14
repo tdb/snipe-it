@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 
-Route::group(['prefix' => 'v1','namespace' => 'Api'], function () {
+Route::group(['prefix' => 'v1','namespace' => 'Api', 'middleware' => 'api'], function () {
 
     Route::group(['prefix' => 'account'], function () {
         Route::get('requestable/hardware',
@@ -56,6 +56,21 @@ Route::group(['prefix' => 'v1','namespace' => 'Api'], function () {
                 'uses' => 'AccessoriesController@checkedout'
             ]
         );
+
+        Route::post('{accessory}/checkout',
+            [
+                'as' => 'api.accessories.checkout',
+                'uses' => 'AccessoriesController@checkout'
+            ]
+        );
+
+        Route::post('{accessory}/checkin',
+            [
+                'as' => 'api.accessories.checkin',
+                'uses' => 'AccessoriesController@checkin'
+            ]
+        );
+
     }); // Accessories group
 
 
@@ -321,12 +336,16 @@ Route::group(['prefix' => 'v1','namespace' => 'Api'], function () {
             'uses' => 'AssetsController@selectlist'
         ]);
 
+        Route::get('audit/{audit}', [
+            'as' => 'api.asset.to-audit',
+            'uses' => 'AssetsController@index'
+        ]);
+
 
         Route::post('audit', [
             'as' => 'api.asset.audit',
             'uses' => 'AssetsController@audit'
         ]);
-
 
         Route::post('{asset_id}/checkout',
             [
@@ -712,6 +731,13 @@ Route::group(['prefix' => 'v1','namespace' => 'Api'], function () {
             [
                 'as' => 'api.users.assetlist',
                 'uses' => 'UsersController@assets'
+            ]
+        );
+
+        Route::get('{user}/accessories',
+            [
+                'as' => 'api.users.accessorieslist',
+                'uses' => 'UsersController@accessories'
             ]
         );
 

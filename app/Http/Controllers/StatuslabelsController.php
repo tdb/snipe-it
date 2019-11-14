@@ -33,7 +33,7 @@ class StatuslabelsController extends Controller
     public function index()
     {
         $this->authorize('view', Statuslabel::class);
-        return view('statuslabels.index', compact('statuslabels'));
+        return view('statuslabels.index');
     }
 
     public function show($id)
@@ -78,7 +78,7 @@ class StatuslabelsController extends Controller
         // create a new model instance
         $statusLabel = new Statuslabel();
 
-        if (!$request->has('statuslabel_types')) {
+        if (!$request->filled('statuslabel_types')) {
             return redirect()->back()->withInput()->withErrors(['statuslabel_types' => trans('validation.statuslabel_type')]);
         }
 
@@ -141,7 +141,7 @@ class StatuslabelsController extends Controller
             return redirect()->route('statuslabels.index')->with('error', trans('admin/statuslabels/message.does_not_exist'));
         }
 
-        if (!$request->has('statuslabel_types')) {
+        if (!$request->filled('statuslabel_types')) {
             return redirect()->back()->withInput()->withErrors(['statuslabel_types' => trans('validation.statuslabel_type')]);
         }
 
