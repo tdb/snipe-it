@@ -33,7 +33,7 @@
                             {{ Form::label('asset_tag', trans('general.asset_tag'), array('class' => 'col-md-3 control-label', 'id' => 'audit_tag')) }}
                             <div class="col-md-9">
                                 <div class="input-group date col-md-5" data-date-format="yyyy-mm-dd">
-                                    <input type="text" class="form-control" name="asset_tag" id="asset_tag" value="{{ Input::old('asset_tag') }}">
+                                    <input type="text" class="form-control" name="asset_tag" id="asset_tag" value="{{ Request::old('asset_tag') }}">
 
                                 </div>
                                 {!! $errors->first('asset_tag', '<span class="alert-msg" aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i> :message</span>') !!}
@@ -46,12 +46,22 @@
                     @include ('partials.forms.edit.location-select', ['translated_name' => trans('general.location'), 'fieldname' => 'location_id'])
 
 
+                    <!-- Update location -->
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-md-9">
+                                <label>
+                                    <input type="checkbox" value="1" name="update_location" class="minimal" {{ Request::old('update_location') == '1' ? ' checked="checked"' : '' }}> Update asset location
+                                </label> <a href="#" class="text-dark-gray" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" title="<i class='fa fa-life-ring'></i> More Info" data-html="true" data-content="Checking this box will edit the asset record to reflect this new location. Leaving it unchecked will simply note the location in the audit log.<br><br>Note that is this asset is checked out, it will not change the location of the person, asset or location it is checked out to."><i class="fa fa-life-ring"></i></a>
+                            </div>
+                        </div>
+
+
                         <!-- Next Audit -->
                         <div class="form-group {{ $errors->has('next_audit_date') ? 'error' : '' }}">
                             {{ Form::label('next_audit_date', trans('general.next_audit_date'), array('class' => 'col-md-3 control-label')) }}
                             <div class="col-md-9">
                                 <div class="input-group date col-md-5" data-provide="datepicker" data-date-format="yyyy-mm-dd">
-                                    <input type="text" class="form-control" placeholder="{{ trans('general.next_audit_date') }}" name="next_audit_date" id="next_audit_date" value="{{ Input::old('next_audit_date', $next_audit_date) }}">
+                                    <input type="text" class="form-control" placeholder="{{ trans('general.next_audit_date') }}" name="next_audit_date" id="next_audit_date" value="{{ old('next_audit_date', $next_audit_date) }}">
                                     <span class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                                 </div>
                                 {!! $errors->first('next_audit_date', '<span class="alert-msg" aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i> :message</span>') !!}
@@ -63,7 +73,7 @@
                         <div class="form-group {{ $errors->has('note') ? 'error' : '' }}">
                             {{ Form::label('note', trans('admin/hardware/form.notes'), array('class' => 'col-md-3 control-label')) }}
                             <div class="col-md-8">
-                                <textarea class="col-md-6 form-control" id="note" name="note">{{ Input::old('note') }}</textarea>
+                                <textarea class="col-md-6 form-control" id="note" name="note">{{ old('note') }}</textarea>
                                 {!! $errors->first('note', '<span class="alert-msg" aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i> :message</span>') !!}
                             </div>
                         </div>
