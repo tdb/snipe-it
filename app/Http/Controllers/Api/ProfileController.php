@@ -15,7 +15,7 @@ class ProfileController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v4.3.0]
      *
-     * @return Array
+     * @return array
      */
     public function requestedAssets()
     {
@@ -24,25 +24,22 @@ class ProfileController extends Controller
         $results = [];
         $results['total'] = $checkoutRequests->count();
 
-
         foreach ($checkoutRequests as $checkoutRequest) {
 
             // Make sure the asset and request still exist
             if ($checkoutRequest && $checkoutRequest->itemRequested()) {
                 $results['rows'][] = [
-                    'image' => $checkoutRequest->itemRequested()->present()->getImageUrl(),
-                    'name' => $checkoutRequest->itemRequested()->present()->name(),
-                    'type' => $checkoutRequest->itemType(),
-                    'qty' => $checkoutRequest->quantity,
-                    'location' => ($checkoutRequest->location()) ? $checkoutRequest->location()->name : null,
+                    'image' => e($checkoutRequest->itemRequested()->present()->getImageUrl()),
+                    'name' => e($checkoutRequest->itemRequested()->present()->name()),
+                    'type' => e($checkoutRequest->itemType()),
+                    'qty' => (int) $checkoutRequest->quantity,
+                    'location' => ($checkoutRequest->location()) ? e($checkoutRequest->location()->name) : null,
                     'expected_checkin' => Helper::getFormattedDateObject($checkoutRequest->itemRequested()->expected_checkin, 'datetime'),
                     'request_date' => Helper::getFormattedDateObject($checkoutRequest->created_at, 'datetime'),
                 ];
             }
-
         }
+
         return $results;
     }
-
-
 }

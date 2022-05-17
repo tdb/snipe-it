@@ -8,7 +8,6 @@
  | be modified directly.
 */
 
-
 return [
 
     /*
@@ -164,8 +163,8 @@ return [
     | Logging Detail
     |--------------------------------------------------------------------------
     |
-    | By default, Laravel writes all log levels to storage. However, in your 
-    | production environment, you may wish to configure the minimum severity that 
+    | By default, Laravel writes all log levels to storage. However, in your
+    | production environment, you may wish to configure the minimum severity that
     | should be logged by editing your APP_LOG_LEVEL env config.
     |
     | Laravel will log all levels greater than or equal to the specified severity.
@@ -176,9 +175,8 @@ return [
     | "debug", "info", "notice", "warning", "error", "critical", "alert", "emergency"
     |
     */
-    
-    'log_level' => env('APP_LOG_LEVEL', 'error'),
 
+    'log_level' => env('APP_LOG_LEVEL', 'error'),
 
     /*
     |--------------------------------------------------------------------------
@@ -195,7 +193,6 @@ return [
 
     'private_uploads' => storage_path().'/private_uploads',
 
-
     /*
    |--------------------------------------------------------------------------
    | ALLOW I-FRAMING
@@ -208,7 +205,6 @@ return [
    */
 
     'allow_iframing' => env('ALLOW_IFRAMING', false),
-
 
     /*
     |--------------------------------------------------------------------------
@@ -255,8 +251,21 @@ return [
     'enable_csp' => env('ENABLE_CSP', false),
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Require SAML Login
+    |--------------------------------------------------------------------------
+    |
+    | Disable the ability to login via form login, and disables the 'nosaml'
+    | workaround. It requires all logins to process via SAML login.
+    | (This is for high security setups. If your SAML configuration is not
+    | working, this option should be set to false. This option is not needed
+    | to successfully configure SAML authentication.)
+    |
+    */
 
-
+    'require_saml' => env('REQUIRE_SAML', false),
+    
     /*
     |--------------------------------------------------------------------------
     | Demo Mode Lockdown
@@ -268,7 +277,6 @@ return [
     */
 
     'lock_passwords' => env('APP_LOCKED', false),
-
 
     /*
     |--------------------------------------------------------------------------
@@ -320,6 +328,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -333,8 +342,6 @@ return [
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
         Unicodeveloper\DumbPassword\DumbPasswordServiceProvider::class,
-        //Schuppo\PasswordStrength\PasswordStrengthServiceProvider::class,
-        Tightenco\Ziggy\ZiggyServiceProvider::class, // Laravel routes in vue
         Eduardokum\LaravelMailAutoEmbed\ServiceProvider::class,
 
         /*
@@ -347,14 +354,11 @@ return [
         App\Providers\SettingsServiceProvider::class,
         App\Providers\ValidationServiceProvider::class,
 
-
         /*
         * Custom service provider
         */
         App\Providers\MacroServiceProvider::class,
-        App\Providers\LdapServiceProvider::class,
         App\Providers\SamlServiceProvider::class,
-
 
     ],
 
@@ -380,6 +384,7 @@ return [
         'Config' => Illuminate\Support\Facades\Config::class,
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
+        'Date' => Illuminate\Support\Facades\Date::class,
         'DB' => Illuminate\Support\Facades\DB::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
@@ -391,6 +396,7 @@ return [
         'Mail' => Illuminate\Support\Facades\Mail::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
+        'PDF'   => Barryvdh\DomPDF\Facade::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
@@ -403,15 +409,25 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        //'Input' => Illuminate\Support\Facades\Input::class,
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
-        // 'Debugbar' => Barryvdh\Debugbar\Facade::class, //autodiscover should handle this
         'Image'     => Intervention\Image\ImageServiceProvider::class,
         'Carbon' => Carbon\Carbon::class,
+        'Helper' => App\Helpers\Helper::class, // makes it much easier to use 'Helper::blah' in blades (which is where we usually use this)
 
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Throttling
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the number of API requests permitted per minute
+    |
+    */
+
+    'api_throttle_per_minute' => env('API_THROTTLE_PER_MINUTE', 120),
 
 ];

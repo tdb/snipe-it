@@ -2,7 +2,7 @@
 
 {{-- Page title --}}
 @section('title')
-    Update Branding Settings
+    {{ trans('admin/settings/general.branding_title') }}
     @parent
 @stop
 
@@ -32,7 +32,7 @@
             <div class="panel box box-default">
                 <div class="box-header with-border">
                     <h2 class="box-title">
-                        <i class="fa fa-copyright"></i> Branding
+                        <i class="fas fa-copyright"></i> {{ trans('admin/settings/general.brand') }}
                     </h2>
                 </div>
                 <div class="box-body">
@@ -49,7 +49,7 @@
                             <div class="col-md-7 required">
                                 @if (config('app.lock_passwords')===true)
                                     {{ Form::text('site_name', Request::old('site_name', $setting->site_name), array('class' => 'form-control', 'disabled'=>'disabled','placeholder' => 'Snipe-IT Asset Management')) }}
-                                    <p class="text-warning"><i class="fa fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
+                                    <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
                                 @else
                                     {{ Form::text('site_name',
                                         Request::old('site_name', $setting->site_name), array('class' => 'form-control','placeholder' => 'Snipe-IT Asset Management', 'data-validation' => 'required')) }}
@@ -77,7 +77,7 @@
                         "logoId" => "uploadLogo",
                         "logoLabel" => trans('admin/settings/general.logo'),
                         "logoClearVariable" => "clear_logo",
-                        "helpBlock" => trans('general.logo_size') . trans('general.image_filetypes_help', ['size' => \App\Helpers\Helper::file_upload_max_size_readable()]),
+                        "helpBlock" => trans('general.logo_size') . trans('general.image_filetypes_help', ['size' => Helper::file_upload_max_size_readable()]),
                     ])
 
                     <!-- Email Logo -->
@@ -86,7 +86,7 @@
                         "logoId" => "uploadEmailLogo",
                         "logoLabel" => trans('admin/settings/general.email_logo'),
                         "logoClearVariable" => "clear_email_logo",
-                        "helpBlock" => trans('admin/settings/general.email_logo_size') . trans('general.image_filetypes_help', ['size' => \App\Helpers\Helper::file_upload_max_size_readable()]),
+                        "helpBlock" => trans('admin/settings/general.email_logo_size') . trans('general.image_filetypes_help', ['size' => Helper::file_upload_max_size_readable()]),
                     ])
 
                     <!-- Label Logo -->
@@ -95,7 +95,7 @@
                         "logoId" => "uploadLabelLogo",
                         "logoLabel" => trans('admin/settings/general.label_logo'),
                         "logoClearVariable" => "clear_label_logo",
-                        "helpBlock" => trans('admin/settings/general.label_logo_size') . trans('general.image_filetypes_help', ['size' => \App\Helpers\Helper::file_upload_max_size_readable()]),
+                        "helpBlock" => trans('admin/settings/general.label_logo_size') . trans('general.image_filetypes_help', ['size' => Helper::file_upload_max_size_readable()]),
                     ])
 
                     <!-- Favicon -->
@@ -105,7 +105,7 @@
                         "logoLabel" => trans('admin/settings/general.favicon'),
                         "logoClearVariable" => "clear_favicon",
                         "helpBlock" => trans('admin/settings/general.favicon_size') .' '. trans('admin/settings/general.favicon_format'),
-                        "allowedTypes" => "image/x-icon,image/gif,image/jpeg,image/png,image/svg,image/vnd.microsoft.icon",
+                        "allowedTypes" => "image/x-icon,image/gif,image/jpeg,image/png,image/svg,image/svg+xml,image/vnd.microsoft.icon",
                         "maxSize" => 20000
                     ])
 
@@ -150,7 +150,7 @@
                             </div>
                         </div>
 
-                        <!-- Email format -->
+                        <!-- Skin -->
                         <div class="form-group {{ $errors->has('skin') ? 'error' : '' }}">
                             <div class="col-md-3">
                                 {{ Form::label('skin', trans('general.skin')) }}
@@ -161,6 +161,17 @@
                             </div>
                         </div>
 
+                        <!-- Allow User Skin -->
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                {{ Form::label('allow_user_skin', trans('admin/settings/general.allow_user_skin')) }}
+                            </div>
+                            <div class="col-md-9">
+                                {{ Form::checkbox('allow_user_skin', '1', old('allow_user_skin', $setting->allow_user_skin),array('class' => 'minimal')) }}
+                                {{ trans('general.yes') }}
+                                <p class="help-block">{{ trans('admin/settings/general.allow_user_skin_help_text') }}</p>
+                            </div>
+                        </div>
 
                         <!-- Custom css -->
                         <div class="form-group {{ $errors->has('custom_css') ? 'error' : '' }}">
@@ -171,7 +182,7 @@
                                 @if (config('app.lock_passwords')===true)
                                     {{ Form::textarea('custom_css', old('custom_css', $setting->custom_css), array('class' => 'form-control','placeholder' => 'Add your custom CSS','disabled'=>'disabled', 'aria-label'=>'custom_css')) }}
                                     {!! $errors->first('custom_css', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
-                                    <p class="text-warning"><i class="fa fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
+                                    <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
                                 @else
                                     {{ Form::textarea('custom_css', old('custom_css', $setting->custom_css), array('class' => 'form-control','placeholder' => 'Add your custom CSS', 'aria-label'=>'custom_css')) }}
                                     {!! $errors->first('custom_css', '<span class="alert-msg" aria-hidden="true">:message</span>') !!}
@@ -189,7 +200,7 @@
                             <div class="col-md-9">
                                 @if (config('app.lock_passwords')===true)
                                     {!! Form::select('support_footer', array('on'=>'Enabled','off'=>'Disabled','admin'=>'Superadmin Only'), Request::old('support_footer', $setting->support_footer), ['class' => 'form-control select2 disabled', 'style'=>'width: 150px ;', 'disabled' => 'disabled']) !!}
-                                    <p class="text-warning"><i class="fa fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
+                                    <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
                                 @else
                                     {!! Form::select('support_footer', array('on'=>'Enabled','off'=>'Disabled','admin'=>'Superadmin Only'), Request::old('support_footer', $setting->support_footer), array('class' => 'form-control select2', 'style'=>'width: 150px ;')) !!}
                                 @endif
@@ -208,7 +219,7 @@
                             <div class="col-md-9">
                                 @if (config('app.lock_passwords')===true)
                                     {!! Form::select('version_footer', array('on'=>'Enabled','off'=>'Disabled','admin'=>'Superadmin Only'), Request::old('version_footer', $setting->version_footer), ['class' => 'form-control select2 disabled', 'style'=>'width: 150px ;', 'disabled' => 'disabled']) !!}
-                                    <p class="text-warning"><i class="fa fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
+                                    <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
                                 @else
                                     {!! Form::select('version_footer', array('on'=>'Enabled','off'=>'Disabled','admin'=>'Superadmin Only'), Request::old('version_footer', $setting->version_footer), array('class' => 'form-control select2', 'style'=>'width: 150px ;')) !!}
                                 @endif
@@ -226,7 +237,7 @@
                             <div class="col-md-9">
                                 @if (config('app.lock_passwords')===true)
                                     {{ Form::textarea('footer_text', Request::old('footer_text', $setting->footer_text), array('class' => 'form-control', 'rows' => '4', 'placeholder' => 'Optional footer text','disabled'=>'disabled')) }}
-                                    <p class="text-warning"><i class="fa fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
+                                    <p class="text-warning"><i class="fas fa-lock"></i> {{ trans('general.feature_disabled') }}</p>
                                 @else
                                     {{ Form::textarea('footer_text', Request::old('footer_text', $setting->footer_text), array('class' => 'form-control','rows' => '4','placeholder' => 'Optional footer text')) }}
                                 @endif
@@ -247,7 +258,7 @@
                         <a class="btn btn-link text-left" href="{{ route('settings.index') }}">{{ trans('button.cancel') }}</a>
                     </div>
                     <div class="text-right col-md-6">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-check icon-white" aria-hidden="true"></i> {{ trans('general.save') }}</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-check icon-white" aria-hidden="true"></i> {{ trans('general.save') }}</button>
                     </div>
 
                 </div>

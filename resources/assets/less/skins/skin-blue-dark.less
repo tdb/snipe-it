@@ -107,16 +107,17 @@ a {
 :root {
   --background: #222;
   --back-main: #333;
-  --back-sub: #444;
+  --back-sub: #3d4144;
+  --back-sub-alt: rgba(0, 0, 0, 0.36);
   --button-default: darken(@blue, 15%);
   --button-primary: darken(@blue, 25%);
   --button-hover: darken(@blue, 30%);
   --header: @blue; /* Use same as Header picker */
   --text-main: #BBB;
   --text-sub: #9b9b9b;
-  --link: lighten(@blue, 30%); /* Use same as Header picker, lighten by 70% */
-  --visited-link: lighten(@blue, 40%); /* Use same as Header picker, lighten by 70% */
-  --hover-link: lighten(@blue, 45%); /* Use same as Header picker, lighten by 70% */
+  --link: #1978D4; /* Use same as Header picker, lighten by 70% */
+  --visited-link: #3c8dbc ; /* Use same as Header picker, lighten by 70% */
+  --hover-link: #4B77BE; /* Use same as Header picker, lighten by 70% */
   --nav-link: #FFF; /* Use same as Header picker */
   --light-link: #fff; /* Use same as Header picker */
 }
@@ -231,12 +232,11 @@ body {
 #details>div>div>div>table {
   background-color: transparent;
 }
-.dropdown-menu, .dropdown-menu>li>a {
-  background-color: var(--back-sub);
-  color: var(--text-main) !important;
-}
 .dropdown-menu>li>a:hover {
   background-color: var(--back-main);
+  color: var(--nav-link);
+}
+.fixed-table-body thead th .th-inner{
   color: var(--nav-link);
 }
 .form-control {
@@ -335,6 +335,9 @@ input[type=text], input[type=search] {
 .table-striped>tbody>tr:nth-of-type(odd) {
   background-color: var(--back-sub);
 }
+.table-striped>tbody>tr:nth-of-type(even){
+  background-color: var(--back-sub-alt);
+}
 #webui>div>div>div>div>div>table>tbody>tr>td>a>i.fa, .box-body, .box-footer, .box-header {
   color: var(--text-main);
 }
@@ -384,3 +387,6 @@ a {
   display: table-cell;
 }
 
+.search-highlight, .search-highlight:hover {
+  background-color: #e9d15b;
+}
