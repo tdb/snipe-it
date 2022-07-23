@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Tillbehör',
     'activated'			    => 'Aktiverad',
     'accessory'				=> 'Tillbehör',
@@ -26,6 +26,7 @@
     'audit'				    => 'Inventera',
     'audit_report'			=> 'Inventeringsloggar',
     'assets'				=> 'Tillgångar',
+    'assigned_to'           => 'Tillgångar tilldelade: namn',
     'avatar_delete'         => 'Ta bort Avatar',
     'avatar_upload'         => 'Ladda upp Avatar',
     'back'      			=> 'Bakåt',
@@ -64,7 +65,8 @@
     'create'				=> 'Skapa Ny',
     'created'               => 'Artikel skapad',
     'created_asset'			=> 'skapa tillgång',
-    'created_at' 			=> 'Skapad',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Poster skapade',
     'updated_at' 			=> 'Uppdaterad på',
     'currency'  			=> 'SEK', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Anställningsnummer',
     'email_domain_help'		=> 'Detta används för att generera e-postadresser vid import',
     'error'				    => 'Fel',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Första Initiala Efternamn (jsmith@example.com)',
     'firstname_lastname_format'	=> 'Förnamn Efternamn (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => 'Förnamn Efternamn (jane.smith@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Filer',
     'file_name'				=> 'Fil',
     'file_type'             => 'Filtyp',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Filuppladdning',
     'file_upload'           => 'Ladda upp fil',
     'generate'				=> 'Generera',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Visa nuvarande',
     'sign_in'				=> 'Logga in',
     'signature'             => 'Signatur',
+    'signed_off_by'         => 'Signerad av',
     'skin'       			=> 'Skal',
     'slack_msg_note'        => 'Ett slack meddelande kommer att skickas',
     'slack_test_msg'        => 'Åh hai! Ser ut som din Slack integration med Snipe-IT fungerar!',
@@ -237,6 +242,7 @@
     'state'  				=> 'stat',
     'status_labels'			=> 'Statusetiketter',
     'status'    			=> 'Status',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Leverantör',
     'suppliers'  			=> 'Leverantörer',
     'sure_to_delete'    => 'Är du säker på att du vill radera',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Ej tillgängliga',
     'unknown_admin'			=> 'Okänd Admin',
     'username_format'		=> 'Användarnamn Format',
+    'username'              => 'Username',
     'update'                => 'Uppdatering',
     'upload_filetypes_help'      => 'Tillåtna filtyper är png, gif, jpg, jpeg, doc, docx, pdf, xls, txt, lic, zip och rar. Max tillåten uppladdningsstorlek är: storlek.',
     'uploaded'              => 'Uppladdad',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Låna utdetta objekt',
     'checkin_tooltip' => 'Checka in detta objekt',
     'checkout_user_tooltip' => 'Låna utdetta objekt till en användare',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

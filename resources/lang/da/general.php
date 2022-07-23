@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Tilbehør',
     'activated'			    => 'Aktiveret',
     'accessory'				=> 'Tilbehør',
@@ -26,6 +26,7 @@
     'audit'				    => 'Revidere',
     'audit_report'			=> 'Revisionslog',
     'assets'				=> 'Aktiver',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => 'Slet avatar',
     'avatar_upload'         => 'Upload Avatar',
     'back'      			=> 'Tilbage',
@@ -64,7 +65,8 @@
     'create'				=> 'Opret ny',
     'created'               => 'Elementet er oprettet',
     'created_asset'			=> 'skabte aktiver',
-    'created_at' 			=> 'Skabt den',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Record dannet',
     'updated_at' 			=> 'Opdateret kl',
     'currency'  			=> '$', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> 'Dette bruges til at generere email-adresser ved importering',
     'error'				    => 'Error',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Fornavnskarakter Efternavn (jsmith@example.com)',
     'firstname_lastname_format'	=> 'Fornavn Efternavn (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => 'Fornavn Efternavn (jane_smith@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Filer',
     'file_name'				=> 'Fil',
     'file_type'             => 'Filtype',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Filoverførsel',
     'file_upload'           => 'File Upload',
     'generate'				=> 'Skab',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Vis Aktuelle',
     'sign_in'				=> 'Log ind',
     'signature'             => 'Underskrift',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> 'Skin',
     'slack_msg_note'        => 'A slack message will be sent',
     'slack_test_msg'        => 'Åh hai! Det ser ud til, at din Slack integration med Snipe-IT virker!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Stat',
     'status_labels'			=> 'Status labels',
     'status'    			=> 'Status',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Leverandør',
     'suppliers'  			=> 'Leverandører',
     'sure_to_delete'    => 'Er du sikker på, at du vil slette',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Ikke implementerbar',
     'unknown_admin'			=> 'Ukendt Admin',
     'username_format'		=> 'Brugernavn Format',
+    'username'              => 'Username',
     'update'                => 'Opdatering',
     'upload_filetypes_help'      => 'Tilladte filtyper er png, gif, jpg, jpeg, doc, docx, pdf, xls, txt, lic, zip, og rar. Maksimalt tilladte uploadstørrelse er :size.',
     'uploaded'              => 'uploaded',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% Complete (warning)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => 'New Asset',
     'new_license'           => 'New License',
     'new_accessory'         => 'New Accessory',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

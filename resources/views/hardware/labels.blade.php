@@ -95,7 +95,7 @@ $qr_txt_size = ($settings->qr_code=='1' ? $settings->labels_width - $qr_size - .
         }
     }
     @if ($snipeSettings->custom_css)
-        {{ $snipeSettings->show_custom_css() }}
+        {!! $snipeSettings->show_custom_css() !!}
     @endif
     div.asset_tag {
         margin: 5px 0 3px 0;

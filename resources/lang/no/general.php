@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Tilbehør',
     'activated'			    => 'Aktivert',
     'accessory'				=> 'Tilbehør',
@@ -26,6 +26,7 @@
     'audit'				    => 'Revisjon',
     'audit_report'			=> 'Overvåkingslogg',
     'assets'				=> 'Eiendeler',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => 'Slett Avatar',
     'avatar_upload'         => 'Last opp Avatar',
     'back'      			=> 'Tilbake',
@@ -64,7 +65,8 @@
     'create'				=> 'Opprett ny',
     'created'               => 'Enhet opprettet',
     'created_asset'			=> 'eiendel opprettet',
-    'created_at' 			=> 'Opprettet',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Post opprettet',
     'updated_at' 			=> 'Oppdatert',
     'currency'  			=> '$', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> 'Brukes til å generere e-postadresser ved import',
     'error'				    => 'Feil',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Fornavn (kun initial) Etternavn (oladunk@example.com)',
     'firstname_lastname_format'	=> 'Fornavn Etternavn (oladunk@example.com)',
     'firstname_lastname_underscore_format' => 'Fornavn Etternavn (oladunk@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Filer',
     'file_name'				=> 'Fil',
     'file_type'             => 'Filtype',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Filopplastinger',
     'file_upload'           => 'Filopplastning',
     'generate'				=> 'Generer',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Vis gjeldende',
     'sign_in'				=> 'Logg inn',
     'signature'             => 'Signatur',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> 'Tema',
     'slack_msg_note'        => 'En slack-melding vil bli sendt',
     'slack_test_msg'        => 'Hei-hå! Ser som din Slack-integrasjon med Snipe-IT fungerer!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Stat',
     'status_labels'			=> 'Statusmerker',
     'status'    			=> 'Status',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Leverandør',
     'suppliers'  			=> 'Leverandører',
     'sure_to_delete'    => 'Er du sikker på at du vil slette',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Ikke utleverbar',
     'unknown_admin'			=> 'Ukjent admin',
     'username_format'		=> 'Format brukernavn',
+    'username'              => 'Username',
     'update'                => 'Oppdater',
     'upload_filetypes_help'      => 'Tillatte filtyper er png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf og rar. Maks. filstørrelse er :size.',
     'uploaded'              => 'Lastet opp',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Sjekk ut denne gjenstanden',
     'checkin_tooltip' => 'Sjekk inn dette elementet',
     'checkout_user_tooltip' => 'Sjekk dette elementet ut til en bruker',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

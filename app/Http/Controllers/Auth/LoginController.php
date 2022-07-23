@@ -104,22 +104,19 @@ class LoginController extends Controller
      */
     private function loginViaSaml(Request $request)
     {
-        \Log::debug('Attempting to login via SAML');
         $saml = $this->saml;
         $samlData = $request->session()->get('saml_login');
 
         if ($saml->isEnabled() && ! empty($samlData)) {
-            \Log::debug('SAML is enabled, and the samleData is not empty');
 
             try {
-                Log::debug('Attempting to log user in by SAML authentication.');
                 $user = $saml->samlLogin($samlData);
 
                 if (!is_null($user)) {
                     Auth::login($user);
                 } else {
                     $username = $saml->getUsername();
-                    \Log::warning("SAML user '$username' could not be found in database.");
+                    \Log::debug("SAML user '$username' could not be found in database.");
                     $request->session()->flash('error', trans('auth/message.signin.error'));
                     $saml->clearData();
                 }
@@ -130,7 +127,7 @@ class LoginController extends Controller
                 }
                 
             } catch (\Exception $e) {
-                \Log::warning('There was an error authenticating the SAML user: '.$e->getMessage());
+                \Log::debug('There was an error authenticating the SAML user: '.$e->getMessage());
                 throw new \Exception($e->getMessage());
             }
 
@@ -139,13 +136,12 @@ class LoginController extends Controller
 
             // Better logging
             if (!$saml->isEnabled()) {
-                \Log::warning("SAML page requested, but SAML does not seem to enabled.");
+                \Log::debug("SAML page requested, but SAML does not seem to enabled.");
             } else {
-                \Log::warning("SAML page requested, but samlData seems empty.");
+                \Log::debug("SAML page requested, but samlData seems empty.");
             }
         }
 
-        \Log::warning("Something else went wrong while trying to login as SAML user");
 
 
     }

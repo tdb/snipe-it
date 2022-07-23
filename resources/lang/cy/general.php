@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Ategolion',
     'activated'			    => 'Actifadu',
     'accessory'				=> 'Ategolyn',
@@ -26,6 +26,7 @@
     'audit'				    => 'Awdit',
     'audit_report'			=> 'Log Awdit',
     'assets'				=> 'Asedau',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => 'Dileu Avatar',
     'avatar_upload'         => 'Uwchlwytho Avatar',
     'back'      			=> 'Yn ôl',
@@ -64,7 +65,8 @@
     'create'				=> 'Creu newydd',
     'created'               => 'Eitem wedi\'i Greu',
     'created_asset'			=> 'ased wedi creu',
-    'created_at' 			=> 'Crëwyd',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Record Created',
     'updated_at' 			=> 'Diweddarwyd ar',
     'currency'  			=> '$', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> 'Defnyddir hwn i gynhyrchu cyfeiriadau e-bost wrth fewnforio',
     'error'				    => 'Error',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Llythyren Cyntaf Enw Cyntaf Cyfenw (jsmith@example.com)',
     'firstname_lastname_format'	=> 'Enw Cyntaf Enw Olaf (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => 'Enw Cyntaf Enw Olaf (jane.smith@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Ffeiliau',
     'file_name'				=> 'Ffeil',
     'file_type'             => 'File Type',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Ffeiliau wedi uwchlwytho',
     'file_upload'           => 'File Upload',
     'generate'				=> 'Creu',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Dangos Cyfredol',
     'sign_in'				=> 'Mewngofnodi',
     'signature'             => 'Llofnod',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> 'Skin',
     'slack_msg_note'        => 'A slack message will be sent',
     'slack_test_msg'        => 'Oh hai! Looks like your Slack integration with Snipe-IT is working!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Talaith',
     'status_labels'			=> 'Labeli Statws',
     'status'    			=> 'Statws',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Cyflenwr',
     'suppliers'  			=> 'Cyflenwyr',
     'sure_to_delete'    => 'Ydych chi\'n sicr eich bod eisiau dileu',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Ddim modd nodi allan',
     'unknown_admin'			=> 'Gweinydd Anhysbys',
     'username_format'		=> 'Fformat enw defnyddiwr',
+    'username'              => 'Username',
     'update'                => 'Diweddaru',
     'upload_filetypes_help'      => 'Allowed filetypes are png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf and rar. Max upload size allowed is :size.',
     'uploaded'              => 'Wedi Uwchlwytho',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% Complete (warning)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => 'New Asset',
     'new_license'           => 'New License',
     'new_accessory'         => 'New Accessory',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

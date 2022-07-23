@@ -1147,6 +1147,31 @@ class Asset extends Depreciable
     }
 
 
+    /**
+     * Query builder scope for Archived assets counting
+     *
+     * This is primarily used for the tab counters so that IF the admin
+     * has chosen to not display archived assets in their regular lists
+     * and views, it will return the correct number.
+     *
+     * @param  \Illuminate\Database\Query\Builder $query Query builder instance
+     *
+     * @return \Illuminate\Database\Query\Builder          Modified query builder
+     */
+
+    public function scopeAssetsForShow($query)
+    {
+
+        if (Setting::getSettings()->show_archived_in_list!=1) {
+            return $query->whereHas('assetstatus', function ($query) {
+                $query->where('archived', '=', 0);
+            });
+        } else {
+            return $query;
+        }
+
+    }
+
   /**
    * Query builder scope for Archived assets
    *
@@ -1187,7 +1212,9 @@ class Asset extends Depreciable
 
     public function scopeRequestableAssets($query)
     {
-        return Company::scopeCompanyables($query->where('requestable', '=', 1))
+        $table = $query->getModel()->getTable();
+
+        return Company::scopeCompanyables($query->where($table.'.requestable', '=', 1))
         ->whereHas('assetstatus', function ($query) {
             $query->where(function ($query) {
                 $query->where('deployable', '=', 1)

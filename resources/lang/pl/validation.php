@@ -64,7 +64,7 @@ return [
         'string'  => ':attribute musi być posiadać minimum :min znaki.',
         'array'   => 'Atrybut: musi zawierać co najmniej: min.',
     ],
-    'starts_with'          => 'The :attribute must start with one of the following: :values.',
+    'starts_with'          => ':attribute musi zaczynać się jednym z następujących wartości: :values.',
     'not_in'               => 'Wybrany :attribute jest nieprawidłowy.',
     'numeric'              => ':attribute musi być liczbą.',
     'present'              => ':attribute nie może być puste.',
@@ -91,6 +91,15 @@ return [
     'url'                  => 'Format pola :attribute jest niewłaściwy.',
     'unique_undeleted'     => 'Wartość :attribute musi być unikalna.',
     'non_circular'         => ':attribute nie może tworzyć odwołań cyklicznych.',
+    'disallow_same_pwd_as_user_fields' => 'Password cannot be the same as the username.',
+    'letters'              => 'Password must contain at least one letter.',
+    'numbers'              => 'Password must contain at least one number.',
+    'case_diff'            => 'Password must use mixed case.',
+    'symbols'              => 'Password must contain symbols.',
+    'gte'                  => [
+        'numeric'          => 'Wartość nie może być ujemna'
+    ],
+
 
     /*
     |--------------------------------------------------------------------------

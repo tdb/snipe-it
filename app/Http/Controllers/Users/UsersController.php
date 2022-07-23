@@ -23,6 +23,7 @@ use Redirect;
 use Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use View;
+use App\Notifications\CurrentInventory;
 
 /**
  * This controller handles all actions related to Users for
@@ -116,6 +117,8 @@ class UsersController extends Controller
         $user->country = $request->input('country', null);
         $user->zip = $request->input('zip', null);
         $user->remote = $request->input('remote', 0);
+        $user->website = $request->input('website', null);
+        $user->created_by = Auth::user()->id;
 
         // Strip out the superuser permission if the user isn't a superadmin
         $permissions_array = $request->input('permission');
@@ -266,6 +269,7 @@ class UsersController extends Controller
         $user->activated = $request->input('activated', 0);
         $user->zip = $request->input('zip', null);
         $user->remote = $request->input('remote', 0);
+        $user->website = $request->input('website', null);
 
         // Update the location of any assets checked out to this user
         Asset::where('assigned_type', User::class)
@@ -610,6 +614,30 @@ class UsersController extends Controller
             ->with('consumables', $consumables)
             ->with('show_user', $show_user)
             ->with('settings', Setting::getSettings());
+    }
+
+    /**
+     * Emails user a list of assigned assets
+     *
+     * @author [G. Martinez] [<godmartinz@gmail.com>]
+     * @since [v6.0.5]
+     * @param  \App\Http\Controllers\Users\UsersController  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function emailAssetList($id)
+    {
+        $this->authorize('view', User::class);
+
+        if (!$user = User::find($id)) {
+            return redirect()->back()
+                ->with('error', trans('admin/users/message.user_not_found', ['id' => $id]));
+        }
+        if (empty($user->email)) {
+            return redirect()->back()->with('error', trans('admin/users/message.user_has_no_email'));
+        }
+
+        $user->notify((new CurrentInventory($user)));
+        return redirect()->back()->with('success', trans('admin/users/general.user_notified'));
     }
 
     /**

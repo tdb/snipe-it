@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Zubehör',
     'activated'			    => 'Aktiviert',
     'accessory'				=> 'Zubehör',
@@ -26,6 +26,7 @@
     'audit'				    => 'Prüfung',
     'audit_report'			=> 'Audit-Log',
     'assets'				=> 'Assets',
+    'assigned_to'           => 'Herausgegeben an :name',
     'avatar_delete'         => 'Avatar löschen',
     'avatar_upload'         => 'Avatar hochladen',
     'back'      			=> 'Zurück',
@@ -65,6 +66,7 @@
     'created'               => 'Eintrag erstellt',
     'created_asset'			=> 'Asset angelegt',
     'created_at' 			=> 'Erstellt am',
+    'created_by'            => 'Erstellt von',
     'record_created' 		=> 'Eintrag erstellt',
     'updated_at' 			=> 'Aktualisiert am',
     'currency'  			=> '€', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Mitarbeiternummer',
     'email_domain_help'		=> 'Dies wird verwendet, um E-Mail-Adressen beim Importieren zu generieren',
     'error'				    => 'Fehler',
+    'example'				=> 'Beispiel: ',
     'filastname_format'			=> 'Initial des Vornamen + Nachname (jsmith@example.com)',
     'firstname_lastname_format'	=> 'Vorname Nachname (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => 'Vorname Nachname (max_mustermann@beispiel.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Dateien',
     'file_name'				=> 'Datei',
     'file_type'             => 'Dateityp',
+    'filesize'              => 'Dateigröße',
     'file_uploads'			=> 'Datei-Uploads',
     'file_upload'           => 'Datei-Upload',
     'generate'				=> 'Generieren',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Aktuelles anzeigen',
     'sign_in'				=> 'Anmelden',
     'signature'             => 'Unterschrift',
+    'signed_off_by'         => 'Unterschrieben von',
     'skin'       			=> 'Skin',
     'slack_msg_note'        => 'Eine Slack Nachricht wird gesendet',
     'slack_test_msg'        => 'Oh hai! Sieht so aus, als ob deine Slack Integration mit Snipe-IT funktioniert!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Bundesland',
     'status_labels'			=> 'Statusbezeichnungen',
     'status'    			=> 'Status',
+    'accept_eula'           => 'Annahmeerklärung',
     'supplier'              => 'Lieferant',
     'suppliers'  			=> 'Lieferanten',
     'sure_to_delete'    => 'Sind Sie sich sicher, dass Sie löschen möchten?',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Nicht herausgebbar',
     'unknown_admin'			=> 'Unbekannter Administrator',
     'username_format'		=> 'Format der Benutzernamen',
+    'username'              => 'Benutzername',
     'update'                => 'Aktualisieren',
     'upload_filetypes_help'      => 'Erlaubte Dateitypen sind png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf und rar. Maximale Uploadgröße beträgt :size.',
     'uploaded'              => 'Hochgeladen',
@@ -302,7 +309,7 @@
     'last_checkout'         => 'Letzte Herausgabe',
     'due_to_checkin'        => 'Folgende :count Elemente werden demnächst zurückgenommen:',
     'expected_checkin'      => 'Erwartetes Rückgabedatum',
-    'reminder_checked_out_items' => 'Dies ist eine Erinnerung an die Artikel, die gerade an Sie herausgegeben sind. Wenn Sie der Meinung sind, dass die Angaben falsch sind (fehlender Artikel oder Artikel, den Sie nie erhalten haben), senden Sie bitte eine E-Mail an :reply_to_name unter :reply_to_addresse.',
+    'reminder_checked_out_items' => 'Dies ist eine Erinnerung an die Artikel, die gerade an Sie herausgegeben sind. Wenn Sie der Meinung sind, dass die Angaben falsch sind (fehlender Artikel oder Artikel, den Sie nie erhalten haben), senden Sie bitte eine E-Mail an :reply_to_name unter :reply_to_address.',
     'changed'               => 'Geändert',
     'to'                    => 'An',
     'report_fields_info'    => '<p>Wählen Sie die Felder aus, die Sie in Ihren benutzerdefinierten Bericht einfügen möchten, und klicken Sie auf Generieren. Die Datei (custom-asset-report-YYYY-mm-dd.csv) wird automatisch heruntergeladen und Sie können sie in Excel öffnen.</p>
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Diesen Gegenstand zuweisen',
     'checkin_tooltip' => 'Diesen Artikel zurücknehmen',
     'checkout_user_tooltip' => 'Diesen Artikel an einen Benutzer herausgeben',
+    'maintenance_mode'      => 'Der Dienst ist wegen Wartungsarbeiten vorübergehend nicht verfügbar. Bitte versuchen Sie es später noch einmal.',
+    'maintenance_mode_title' => 'System vorübergehend nicht verfügbar',
+    'ldap_import'           => 'Benutzerkennwort sollte nicht von LDAP verwaltet werden. (Dies erlaubt es Ihnen, vergessene Passwortanfragen zu senden.)',
+    'purge_not_allowed'     => 'Löschen von "gelöschten Daten" wurde in der .env-Datei verboten. Kontaktieren Sie den Support oder Ihren Systemadministrator.',
+    'backup_delete_not_allowed'     => 'Das Löschen von Sicherungen wurde in der .env-Datei verboten. Kontaktieren Sie den Support oder Ihren Systemadministrator.',
+    'additional_files'           => 'Zusätzliche Dateien',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

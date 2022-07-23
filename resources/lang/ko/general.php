@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> '부속품들',
     'activated'			    => '활성화',
     'accessory'				=> '부속품',
@@ -26,6 +26,7 @@
     'audit'				    => '감사',
     'audit_report'			=> '감사 기록',
     'assets'				=> '자산',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => '아바타 삭제',
     'avatar_upload'         => '아바타 올리기',
     'back'      			=> '이전',
@@ -64,7 +65,8 @@
     'create'				=> '새로 생성',
     'created'               => '품목 생성됨',
     'created_asset'			=> '생성된 자산',
-    'created_at' 			=> '생성 위치',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> '레코드 생성',
     'updated_at' 			=> '업데이트',
     'currency'  			=> '원', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> '읽어오기시 전자 우편 주소를 생성하는데 사용됩니다.',
     'error'				    => '오류',
+    'example'				=> 'Example: ',
     'filastname_format'			=> '초기 성명 (jsmith@example.com)',
     'firstname_lastname_format'	=> '이름 성 (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => '이름 성 (jane.smith@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => '파일',
     'file_name'				=> '파일',
     'file_type'             => '파일 형식',
+    'filesize'              => 'File Size',
     'file_uploads'			=> '파일 올리기',
     'file_upload'           => '파일 올리기',
     'generate'				=> '생성',
@@ -229,6 +233,7 @@
     'show_current'  		=> '현재 보기',
     'sign_in'				=> '로그인',
     'signature'             => '서명',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> '스킨',
     'slack_msg_note'        => '슬랙으로 메세지 보내기',
     'slack_test_msg'        => 'Oh hai! Looks like your Slack integration with Snipe-IT is working!',
@@ -237,6 +242,7 @@
     'state'  				=> '주',
     'status_labels'			=> '상태 딱지',
     'status'    			=> '상태',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => '공급자',
     'suppliers'  			=> '공급자',
     'sure_to_delete'    => '정말로 삭제 하시겠습니까',
@@ -252,6 +258,7 @@
     'undeployable'			=> '사용불가',
     'unknown_admin'			=> '알수없는 관리자',
     'username_format'		=> '사용자명 형식',
+    'username'              => 'Username',
     'update'                => '갱신',
     'upload_filetypes_help'      => 'Allowed filetypes are png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf and rar. Max upload size allowed is :size.',
     'uploaded'              => '업로드됨',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% 완료(경고)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => '새 자산',
     'new_license'           => '새 라이센스',
     'new_accessory'         => '새 부속품',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Додатоци',
     'activated'			    => 'Активиран',
     'accessory'				=> 'Додаток',
@@ -26,6 +26,7 @@
     'audit'				    => 'Ревизија',
     'audit_report'			=> 'Дневник за ревизија',
     'assets'				=> 'Основни средства',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => 'Избриши аватар',
     'avatar_upload'         => 'Прикачи аватар',
     'back'      			=> 'Назад',
@@ -64,7 +65,8 @@
     'create'				=> 'Креирај Нов {0}',
     'created'               => 'Креирана ставка',
     'created_asset'			=> 'креирано основно средство',
-    'created_at' 			=> 'Креиран во',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Record Created',
     'updated_at' 			=> 'Ажурирано во',
     'currency'  			=> '$', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> 'Ова се користи за генерирање на адреси на е-пошта при увоз',
     'error'				    => 'Error',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Почетна буква од име, Презиме (jjankov@example.com)',
     'firstname_lastname_format'	=> 'Име, точка, Презиме (janko.jankov@example.com)',
     'firstname_lastname_underscore_format' => 'Име, _, Презиме (janko_jankov@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Датотеки',
     'file_name'				=> 'Датотека',
     'file_type'             => 'File Type',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Прикачување датотеки',
     'file_upload'           => 'File Upload',
     'generate'				=> 'Генерирање',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Прикажи тековно',
     'sign_in'				=> 'Најави се',
     'signature'             => 'Потпис',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> 'Кожа',
     'slack_msg_note'        => 'A slack message will be sent',
     'slack_test_msg'        => 'Oh hai! Looks like your Slack integration with Snipe-IT is working!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Состојба',
     'status_labels'			=> 'Етикети со статус',
     'status'    			=> 'Статус',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Добавувач',
     'suppliers'  			=> 'Добавувачи',
     'sure_to_delete'    => 'Дали сте сигурни дека сакате да ја избришете',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Не може да се распореди',
     'unknown_admin'			=> 'Непознат Администратор',
     'username_format'		=> 'Формат на корисничко име',
+    'username'              => 'Username',
     'update'                => 'Ажурирање',
     'upload_filetypes_help'      => 'Allowed filetypes are png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf and rar. Max upload size allowed is :size.',
     'uploaded'              => 'Прикачено',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% Complete (warning)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => 'New Asset',
     'new_license'           => 'New License',
     'new_accessory'         => 'New Accessory',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

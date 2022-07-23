@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Accesorios',
     'activated'			    => 'Activado',
     'accessory'				=> 'Accesorio',
@@ -26,6 +26,7 @@
     'audit'				    => 'Auditar',
     'audit_report'			=> 'Registro de Auditoría',
     'assets'				=> 'Activos',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => 'Borrar Avatar',
     'avatar_upload'         => 'Cargar Avatar',
     'back'      			=> 'Atrás',
@@ -64,7 +65,8 @@
     'create'				=> 'Crear Nuevo',
     'created'               => 'Elemento Creado',
     'created_asset'			=> 'activo creado',
-    'created_at' 			=> 'Creado El',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Registro Creado',
     'updated_at' 			=> 'Actualizado El',
     'currency'  			=> '$', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> 'Este se utiliza para generar direcciones de correo al importar',
     'error'				    => 'Error',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Primera Inicial y Apellido (jsmith@example.com)',
     'firstname_lastname_format'	=> 'Nombre y Apellido (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => 'Primer Nombre y Apellido (jane_smith@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Archivos',
     'file_name'				=> 'Archivo',
     'file_type'             => 'Tipo de archivo',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Carga de Archivos',
     'file_upload'           => 'File Upload',
     'generate'				=> 'Generar',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Mostrar actual',
     'sign_in'				=> 'Entrar',
     'signature'             => 'Firma',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> 'Tema',
     'slack_msg_note'        => 'A slack message will be sent',
     'slack_test_msg'        => '¡Parece que tu integración de Slack con Snipe-IT está funcionando!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Estado',
     'status_labels'			=> 'Etiquetas de Estado',
     'status'    			=> 'Estado',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Proveedor',
     'suppliers'  			=> 'Proveedores',
     'sure_to_delete'    => '¿Está seguro que quieres borrar',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'No desplegable',
     'unknown_admin'			=> 'Administrador Desconocido',
     'username_format'		=> 'Formato de Nombre de Usuario',
+    'username'              => 'Username',
     'update'                => 'Actualizar',
     'upload_filetypes_help'      => 'Los tipos de archivo permitidos son png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf y rar. El tamaño máximo permitido es :size.',
     'uploaded'              => 'Actualizado',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% Complete (warning)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => 'New Asset',
     'new_license'           => 'New License',
     'new_accessory'         => 'New Accessory',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

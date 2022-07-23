@@ -642,6 +642,10 @@ class ReportsController extends Controller
             if (($request->filled('next_audit_start')) && ($request->filled('next_audit_end'))) {
                 $assets->whereBetween('assets.next_audit_date', [$request->input('next_audit_start'), $request->input('next_audit_end')]);
             }
+            if($request->filled('exclude_archived')){
+                $assets->notArchived();
+            }
+
             $assets->orderBy('assets.id', 'ASC')->chunk(20, function ($assets) use ($handle, $customfields, $request) {
             
                 $executionTime = microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
@@ -939,9 +943,9 @@ class ReportsController extends Controller
          * Get all assets with pending checkout acceptances
          */
         if($showDeleted) {
-            $acceptances = CheckoutAcceptance::pending()->withTrashed()->with(['assignedTo' , 'checkoutable.assignedTo', 'checkoutable.model'])->get();
+            $acceptances = CheckoutAcceptance::pending()->where('checkoutable_type', 'App\Models\Asset')->withTrashed()->with(['assignedTo' , 'checkoutable.assignedTo', 'checkoutable.model'])->get();
         } else {
-            $acceptances = CheckoutAcceptance::pending()->with(['assignedTo' => function ($query) {
+            $acceptances = CheckoutAcceptance::pending()->where('checkoutable_type', 'App\Models\Asset')->with(['assignedTo' => function ($query) {
                 $query->withTrashed();
             }, 'checkoutable.assignedTo', 'checkoutable.model'])->get();
         }
@@ -1147,19 +1151,5 @@ class ReportsController extends Controller
         return $this->getCheckedOutAssetsRequiringAcceptance(
             $this->getModelsInCategoriesThatRequireAcceptance($this->getCategoriesThatRequireAcceptance())
         );
-    }
-
-    /**
-     * getAssetsNotAcceptedYet
-     *
-     * @return array
-     * @author  Vincent Sposato <vincent.sposato@gmail.com>
-     * @version v1.0
-     */
-    protected function getAssetsNotAcceptedYet()
-    {
-        $this->authorize('reports.view');
-
-        return Asset::unaccepted();
     }
 }

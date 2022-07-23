@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> 'Oheistarvikkeet',
     'activated'			    => 'Aktivoitu',
     'accessory'				=> 'Oheistarvike',
@@ -26,6 +26,7 @@
     'audit'				    => 'Tarkasta',
     'audit_report'			=> 'Tarkastusloki',
     'assets'				=> 'Laitteet',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => 'Poista käyttäjäkuva',
     'avatar_upload'         => 'Lähetä käyttäjäkuva',
     'back'      			=> 'Edellinen',
@@ -64,7 +65,8 @@
     'create'				=> 'Luo uusi',
     'created'               => 'Nimike luotiin',
     'created_asset'			=> 'laite luotu',
-    'created_at' 			=> 'Luontiaika',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> 'Tietue luotu',
     'updated_at' 			=> 'Päivitetty klo',
     'currency'  			=> '€', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> 'Käytetään sähköpostiosoitteiden luontiin tietoja tuotaessa',
     'error'				    => 'Error',
+    'example'				=> 'Example: ',
     'filastname_format'			=> 'Ensimmäinen nimikirjain sukunimi (pvirtanen@example.com)',
     'firstname_lastname_format'	=> 'Etunimi . Sukunimi (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => 'Etunimi Sukunimi (paivi_virtanen@example.com)',
@@ -114,6 +117,7 @@
     'files'                 => 'Tiedostot',
     'file_name'				=> 'Tiedosto',
     'file_type'             => 'Tiedostotyyppi',
+    'filesize'              => 'File Size',
     'file_uploads'			=> 'Tiedostot',
     'file_upload'           => 'File Upload',
     'generate'				=> 'Luo',
@@ -229,6 +233,7 @@
     'show_current'  		=> 'Näytä nykyiset',
     'sign_in'				=> 'Kirjaudu sisään',
     'signature'             => 'Allekirjoitus',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> 'Ulkoasu',
     'slack_msg_note'        => 'A slack message will be sent',
     'slack_test_msg'        => 'Jestas! Näyttää siltä, että Slack integrointi Snipe-IT. n kanssa toimii!',
@@ -237,6 +242,7 @@
     'state'  				=> 'Maakunta',
     'status_labels'			=> 'Tilamerkinnät',
     'status'    			=> 'Tila',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => 'Toimittaja',
     'suppliers'  			=> 'Toimittajat',
     'sure_to_delete'    => 'Haluatko varmasti poistaa',
@@ -252,6 +258,7 @@
     'undeployable'			=> 'Ei käyttöönotettavissa',
     'unknown_admin'			=> 'Tuntematon ylläpitäjä',
     'username_format'		=> 'Käyttäjätunnuksen muoto',
+    'username'              => 'Username',
     'update'                => 'Päivitä',
     'upload_filetypes_help'      => 'Sallitut tiedostotyypit ovat png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf ja rar. Suurin sallittu lähetyskoko on :size.',
     'uploaded'              => 'Lähetetty',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% Complete (warning)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => 'New Asset',
     'new_license'           => 'New License',
     'new_accessory'         => 'New Accessory',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];

@@ -66,6 +66,7 @@
               <td>
 
                   @can('superadmin')
+                      @if (config('app.allow_backup_delete')=='true')
                       <a data-html="false"
                          class="btn delete-asset btn-danger btn-sm {{ (config('app.lock_passwords')) ? ' disabled': '' }}" 
                          data-toggle="modal" href="{{ route('settings.backups.destroy', $file['filename']) }}" 
@@ -75,6 +76,13 @@
                           <i class="fas fa-trash icon-white" aria-hidden="true"></i>
                           <span class="sr-only">{{ trans('general.delete') }}</span>
                       </a>
+                      @else
+                          <a href="#"
+                             class="btn delete-asset btn-danger btn-sm disabled">
+                              <i class="fas fa-trash icon-white" aria-hidden="true"></i>
+                              <span class="sr-only">{{ trans('general.delete') }}</span>
+                          </a>
+                      @endif
 
                      <a data-html="true" 
                      href="{{ route('settings.backups.restore', $file['filename']) }}" 
@@ -145,8 +153,10 @@
 
         </div>
         <div class="col-md-4 col-xs-4">
-            <button class="btn btn-primary col-md-12 col-xs-12" id="uploadButton" disabled>{{ trans('button.upload') }}</button>
+            <button class="btn btn-primary col-md-12 col-xs-12" id="uploadButton" disabled>{{ trans('button.upload') }} <span id="uploadIcon"></span></button>
         </div>
+
+
         <div class="col-md-12">
           
           <p class="label label-default col-md-12" style="font-size: 120%!important; margin-top: 10px; margin-bottom: 10px;" id="uploadFile-info"></p>
@@ -214,11 +224,19 @@
         $("#uploadFile").on('change',function(event){
 
             if ($('#uploadFile').val().length == 0) {
-              $("#uploadButton").attr("disabled", true);
+                $("#uploadButton").attr("disabled", true);
+                $("#uploadIcon").html('');
             } else {
               $('#uploadButton').removeAttr('disabled');
+
+                $("#uploadButton").click(function(){
+                    $("#uploadIcon").html('<i class="fas fa-spinner spin"></i>');
+                });
             }
-            
+
+
+
+
         });
       });
   </script>

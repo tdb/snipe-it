@@ -1,6 +1,6 @@
 <?php
 
-    return [
+return [
     'accessories'			=> '配件',
     'activated'			    => '已啟用',
     'accessory'				=> '配件',
@@ -26,6 +26,7 @@
     'audit'				    => '稽核',
     'audit_report'			=> '稽核記錄',
     'assets'				=> '資產',
+    'assigned_to'           => 'Assigned to :name',
     'avatar_delete'         => '刪除頭像',
     'avatar_upload'         => '上傳頭像',
     'back'      			=> '返回',
@@ -64,7 +65,8 @@
     'create'				=> '新增',
     'created'               => '項目已新增',
     'created_asset'			=> '新增資產',
-    'created_at' 			=> '新增於',
+    'created_at' 			=> 'Created At',
+    'created_by'            => 'Created By',
     'record_created' 		=> '記錄已建立',
     'updated_at' 			=> '更新日',
     'currency'  			=> '$', // this is deprecated
@@ -99,6 +101,7 @@
     'employee_number'       => 'Employee Number',
     'email_domain_help'		=> '這用在匯入時產生電子郵件地址',
     'error'				    => 'Error',
+    'example'				=> 'Example: ',
     'filastname_format'			=> '縮寫名 姓，例如 (jsmith@example.com)',
     'firstname_lastname_format'	=> '名 姓，例如 (jane.smith@example.com)',
     'firstname_lastname_underscore_format' => '名字姓氏，例如（jane_smith@example.com）',
@@ -114,6 +117,7 @@
     'files'                 => '檔案',
     'file_name'				=> '檔案',
     'file_type'             => '檔案類型',
+    'filesize'              => 'File Size',
     'file_uploads'			=> '上傳檔案',
     'file_upload'           => 'File Upload',
     'generate'				=> '產生',
@@ -229,6 +233,7 @@
     'show_current'  		=> '顯示當前',
     'sign_in'				=> '登入',
     'signature'             => '簽名',
+    'signed_off_by'         => 'Signed Off By',
     'skin'       			=> '主題',
     'slack_msg_note'        => 'A slack message will be sent',
     'slack_test_msg'        => '看起來 Slack 已成功整合到 Snipe-IT 了!',
@@ -237,6 +242,7 @@
     'state'  				=> '省份',
     'status_labels'			=> '狀態標籤',
     'status'    			=> '狀態',
+    'accept_eula'           => 'Acceptance Agreement',
     'supplier'              => '供應商',
     'suppliers'  			=> '供應商',
     'sure_to_delete'    => '您確定要刪除嗎？',
@@ -252,6 +258,7 @@
     'undeployable'			=> '不可佈署',
     'unknown_admin'			=> '未知管理員',
     'username_format'		=> '使用者名稱格式',
+    'username'              => 'Username',
     'update'                => '更新',
     'upload_filetypes_help'      => '允許的檔案類別為 png, gif, jpg, jpeg, doc, docx, pdf, xls, xlsx, txt, lic, xml, zip, rtf 與 rar. 最大允許上傳的大小是 :size.',
     'uploaded'              => '已上傳',
@@ -322,7 +329,7 @@
     'invalid_category'      => 'Invalid category',
     'dashboard_info'        => 'This is your dashboard. There are many like it, but this one is yours.',
     '60_percent_warning'    => '60% Complete (warning)',
-    'dashboard_empty'       => 'It looks like you haven not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
+    'dashboard_empty'       => 'It looks like you have not added anything yet, so we do not have anything awesome to display. Get started by adding some assets, accessories, consumables, or licenses now!',
     'new_asset'             => 'New Asset',
     'new_license'           => 'New License',
     'new_accessory'         => 'New Accessory',
@@ -350,4 +357,12 @@
     'checkout_tooltip' => 'Check this item out',
     'checkin_tooltip' => 'Check this item in',
     'checkout_user_tooltip' => 'Check this item out to a user',
+    'maintenance_mode'      => 'The service is temporarily unavailable for system updates. Please check back later.',
+    'maintenance_mode_title' => 'System Temporarily Unavailable',
+    'ldap_import'           => 'User password should not be managed by LDAP. (This allows you to send forgotten password requests.)',
+    'purge_not_allowed'     => 'Purging deleted data has been disabled in the .env file. Contact support or your systems administrator.',
+    'backup_delete_not_allowed'     => 'Deleting backups has been disabled in the .env file. Contact support or your systems administrator.',
+    'additional_files'           => 'Additional Files',
+    'shitty_browser'        => 'No signature detected. If you are using an older browser, please use a more modern browser to complete your asset acceptance.',
+
 ];
