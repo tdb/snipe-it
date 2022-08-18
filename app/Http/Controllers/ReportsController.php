@@ -422,6 +422,9 @@ class ReportsController extends Controller
 
             $header = [];
 
+            if ($request->filled('id')) {
+                $header[] = trans('general.id');
+            }
 
             if ($request->filled('company')) {
                 $header[] = trans('general.company');
@@ -552,6 +555,10 @@ class ReportsController extends Controller
                 $header[] = trans('general.updated_at');
             }
 
+            if ($request->filled('deleted_at')) {
+                $header[] = trans('general.deleted');
+            }
+
             if ($request->filled('last_audit_date')) {
                 $header[] = trans('general.last_audit');
             }
@@ -562,6 +569,10 @@ class ReportsController extends Controller
 
             if ($request->filled('notes')) {
                 $header[] = trans('general.notes');
+            }
+
+            if ($request->filled('url')) {
+                $header[] = trans('admin/manufacturers/table.url');
             }
 
 
@@ -586,7 +597,6 @@ class ReportsController extends Controller
             }
 
             if ($request->filled('by_rtd_location_id')) {
-                \Log::debug('RTD location should match: '.$request->input('by_rtd_location_id'));
                 $assets->where('assets.rtd_location_id', $request->input('by_rtd_location_id'));
             }
 
@@ -607,7 +617,6 @@ class ReportsController extends Controller
             }
 
             if ($request->filled('by_dept_id')) {
-                \Log::debug('Only users in dept '.$request->input('by_dept_id'));
                 $assets->CheckedOutToTargetInDepartment($request->input('by_dept_id'));
             }
 
@@ -642,8 +651,14 @@ class ReportsController extends Controller
             if (($request->filled('next_audit_start')) && ($request->filled('next_audit_end'))) {
                 $assets->whereBetween('assets.next_audit_date', [$request->input('next_audit_start'), $request->input('next_audit_end')]);
             }
-            if($request->filled('exclude_archived')){
+            if ($request->filled('exclude_archived')) {
                 $assets->notArchived();
+            }
+            if ($request->input('deleted_assets') == '1') {
+                $assets->withTrashed();
+            }
+            if ($request->input('deleted_assets') == '0') {
+                $assets->onlyTrashed();
             }
 
             $assets->orderBy('assets.id', 'ASC')->chunk(20, function ($assets) use ($handle, $customfields, $request) {
@@ -654,7 +669,11 @@ class ReportsController extends Controller
                 foreach ($assets as $asset) {
                     $count++;
                     $row = [];
-                    
+
+                    if ($request->filled('id')) {
+                        $row[] = ($asset->id) ? $asset->id : '';
+                    }
+
                     if ($request->filled('company')) {
                         $row[] = ($asset->company) ? $asset->company->name : '';
                     }
@@ -783,7 +802,7 @@ class ReportsController extends Controller
 
                     if ($request->filled('warranty')) {
                         $row[] = ($asset->warranty_months) ? $asset->warranty_months : '';
-                        $row[] = $asset->present()->warrantee_expires();
+                        $row[] = $asset->present()->warranty_expires();
                     }
 
                     if ($request->filled('depreciation')) {
@@ -810,6 +829,10 @@ class ReportsController extends Controller
                         $row[] = ($asset->updated_at) ? $asset->updated_at : '';
                     }
 
+                    if ($request->filled('deleted_at')) {
+                        $row[] = ($asset->deleted_at) ? $asset->deleted_at : '';
+                    }
+
                     if ($request->filled('last_audit_date')) {
                         $row[] = ($asset->last_audit_date) ? $asset->last_audit_date : '';
                     }
@@ -820,6 +843,10 @@ class ReportsController extends Controller
 
                     if ($request->filled('notes')) {
                         $row[] = ($asset->notes) ? $asset->notes : '';
+                    }
+
+                    if ($request->filled('url')) {
+                        $row[] = config('app.url').'/hardware/'.$asset->id ;
                     }
 
                     foreach ($customfields as $customfield) {

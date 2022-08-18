@@ -39,6 +39,12 @@
             </div>
             <div class="checkbox col-md-12">
               <label>
+                {{ Form::checkbox('id', '1', '1', ['class' => 'minimal']) }}
+                {{ trans('general.id') }}
+              </label>
+            </div>
+            <div class="checkbox col-md-12">
+              <label>
                 {{ Form::checkbox('company', '1', '1', ['class' => 'minimal']) }}
                 {{ trans('general.company') }}
               </label>
@@ -135,7 +141,6 @@
               </label>
             </div>
 
-
             <div class="checkbox col-md-12">
               <label>
                 {{ Form::checkbox('status', '1', '1', ['class' => 'minimal']) }}
@@ -180,6 +185,13 @@
             </div>
             <div class="checkbox col-md-12">
               <label>
+                {{ Form::checkbox('deleted_at', '1', '1', ['class' => 'minimal']) }}
+                {{ trans('general.deleted') }}
+              </label>
+            </div>
+
+            <div class="checkbox col-md-12">
+              <label>
                 {{ Form::checkbox('last_audit_date', '1', '1', ['class' => 'minimal']) }}
                 {{ trans('general.last_audit') }}
               </label>
@@ -194,6 +206,12 @@
               <label>
                 {{ Form::checkbox('notes', '1', '1', ['class' => 'minimal']) }}
                 {{ trans('general.notes') }}
+              </label>
+            </div>
+            <div class="checkbox col-md-12">
+              <label>
+                {{ Form::checkbox('url', '1', '1', ['class' => 'minimal']) }}
+                - {{ trans('admin/manufacturers/table.url') }}
               </label>
             </div>
 
@@ -351,6 +369,18 @@
                 {{ trans('general.bom_remark') }}
               </label>
             </div>
+
+              <div class="col-md-9 col-md-offset-3">
+                <br>
+                  {{ Form::radio('deleted_assets', '', true, ['aria-label'=>'deleted_assets', 'class'=>'minimal', 'id'=>'deleted_assets_exclude_deleted'])}}
+                  <label for="deleted_assets_exclude_deleted">{{ trans('general.exclude_deleted') }}</label>
+                  <br>
+                  {{ Form::radio('deleted_assets', '1', old('deleted_assets'), ['aria-label'=>'deleted_assets','class' => 'minimal', 'id'=>'deleted_assets_include_deleted']) }}
+                  <label for="deleted_assets_include_deleted">{{ trans('general.include_deleted') }}</label>
+                  <br>
+                  {{ Form::radio('deleted_assets', '0', old('deleted_assets'), ['aria-label'=>'deleted_assets','class' => 'minimal','id'=>'deleted_assets_only_deleted']) }}
+                <label for="deleted_assets_only_deleted">{{ trans('general.only_deleted') }}</label>
+              </div>
 
           </div>
 
