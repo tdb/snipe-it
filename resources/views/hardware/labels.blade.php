@@ -130,9 +130,9 @@ $qr_txt_size = ($settings->qr_code=='1' ? $settings->labels_width - $qr_size - .
                 {{ $asset->serial }}
             </div>
             <div class="pull-left contact_text">
-                Property of School of Computing, University of Kent
+                Property of CEMS Division, University of Kent
                 <br>
-                For assistance please contact cs-syshelp@kent.ac.uk
+                For assistance please contact cemstech@kent.ac.uk
 	    </div>
 
         </div>
