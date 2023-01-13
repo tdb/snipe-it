@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Department;
+use App\Models\Group;
 use Illuminate\Console\Command;
 use App\Models\Setting;
 use App\Models\Ldap;
@@ -57,6 +58,7 @@ class LdapSync extends Command
         $ldap_result_country = Setting::getSettings()->ldap_country;
         $ldap_result_dept = Setting::getSettings()->ldap_dept;
         $ldap_result_manager = Setting::getSettings()->ldap_manager;
+        $ldap_default_group = Setting::getSettings()->ldap_default_group;
 
         try {
             $ldapconn = Ldap::connectToLdap();
@@ -175,6 +177,18 @@ class LdapSync extends Command
         $tmp_pass = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 20);
         $pass = bcrypt($tmp_pass);
 
+        $manager_cache = [];
+
+        if($ldap_default_group != null) {
+
+            $default = Group::find($ldap_default_group);
+            if (!$default) {
+                $ldap_default_group = null; // un-set the default group if that group doesn't exist
+            }
+
+        }
+
+
         for ($i = 0; $i < $results['count']; $i++) {
                 $item = [];
                 $item['username'] = isset($results[$i][$ldap_result_username][0]) ? $results[$i][$ldap_result_username][0] : '';
@@ -189,6 +203,7 @@ class LdapSync extends Command
                 $item['country'] = isset($results[$i][$ldap_result_country][0]) ? $results[$i][$ldap_result_country][0] : '';
                 $item['department'] = isset($results[$i][$ldap_result_dept][0]) ? $results[$i][$ldap_result_dept][0] : '';
                 $item['manager'] = isset($results[$i][$ldap_result_manager][0]) ? $results[$i][$ldap_result_manager][0] : '';
+
 
                 $department = Department::firstOrCreate([
                     'name' => $item['department'],
@@ -217,12 +232,42 @@ class LdapSync extends Command
                 $user->department_id = $department->id;
 
                 if($item['manager'] != null) {
-                    //Captures only the Canonical Name
-                    $item['manager'] = ltrim($item['manager'], "CN=");
-                    $item['manager'] = substr($item['manager'],0, strpos($item['manager'], ','));
-                    $ldap_manager = User::where('username', $item['manager'])->first();
-                    if ( $ldap_manager && isset($ldap_manager->id) ) {
-                        $user->manager_id = $ldap_manager->id;
+                    // Check Cache first
+                    if (isset($manager_cache[$item['manager']])) {
+                        // found in cache; use that and avoid extra lookups
+                        $user->manager_id = $manager_cache[$item['manager']];
+                    } else {
+                        // Get the LDAP Manager
+                        try {
+                            $ldap_manager = Ldap::findLdapUsers($item['manager'], -1, $this->option('filter'));
+                        } catch (\Exception $e) {
+                            \Log::warning("Manager lookup caused an exception: " . $e->getMessage() . ". Falling back to direct username lookup");
+                            // Hail-mary for Okta manager 'shortnames' - will only work if
+                            // Okta configuration is using full email-address-style usernames
+                            $ldap_manager = [
+                                "count" => 1,
+                                0 => [
+                                    $ldap_result_username => [$item['manager']]
+                                ]
+                            ];
+                        }
+
+                        if ($ldap_manager["count"] > 0) {
+
+                            // Get the Manager's username
+                            // PHP LDAP returns every LDAP attribute as an array, and 90% of the time it's an array of just one item. But, hey, it's an array.
+                            $ldapManagerUsername = $ldap_manager[0][$ldap_result_username][0];
+
+                            // Get User from Manager username.
+                            $ldap_manager = User::where('username', $ldapManagerUsername)->first();
+
+                            if ($ldap_manager && isset($ldap_manager->id)) {
+                                // Link user to manager id.
+                                $user->manager_id = $ldap_manager->id;
+                            }
+                        }
+                        $manager_cache[$item['manager']] = $ldap_manager && isset($ldap_manager->id)  ? $ldap_manager->id : null; // Store results in cache, even if 'failed'
+
                     }
                 }
 
@@ -295,6 +340,10 @@ class LdapSync extends Command
                 if ($user->save()) {
                     $item['note'] = $item['createorupdate'];
                     $item['status'] = 'success';
+                    if ( $item['createorupdate'] === 'created' && $ldap_default_group) {
+                         $user->groups()->attach($ldap_default_group);
+                    }
+
                 } else {
                     foreach ($user->getErrors()->getMessages() as $key => $err) {
                         $errors .= $err[0];

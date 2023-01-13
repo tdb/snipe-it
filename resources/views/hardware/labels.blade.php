@@ -147,9 +147,9 @@ $qr_txt_size = ($settings->qr_code=='1' ? $settings->labels_width - $qr_size - .
 
     </div>
 
-    @if ($count % $settings->labels_per_page == 0)
-        <div class="page-break"></div>
-        <div class="next-padding">&nbsp;</div>
+    @if (($count % $settings->labels_per_page == 0) && $count!=count($assets))
+    <div class="page-break"></div>
+    <div class="next-padding">&nbsp;</div>
     @endif
 
 @endforeach
