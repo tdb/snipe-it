@@ -282,7 +282,6 @@ class LdapSync extends Command
                     }
                 }
 
-
                 // Sync activated state for Active Directory.
                 if ( !empty($ldap_result_active_flag)) { // IF we have an 'active' flag set....
                     // ....then *most* things that are truthy will activate the user. Anything falsey will deactivate them.
