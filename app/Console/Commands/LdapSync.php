@@ -230,6 +230,7 @@ class LdapSync extends Command
                     $user->activated = 1; // newly created users can log in by default, unless AD's UAC is in use, or an active flag is set (below)
                     $item['createorupdate'] = 'created';
                 }
+                $location_save = $user->location_id;
 
                 $user->first_name = $item['firstname'];
                 $user->last_name = $item['lastname'];
@@ -343,6 +344,7 @@ class LdapSync extends Command
                         $user->location_id = $location->id;
                     }
                 }
+                $user->location_id = $location_save;
 
                 $user->ldap_import = 1;
 
