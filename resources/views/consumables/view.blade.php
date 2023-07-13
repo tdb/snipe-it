@@ -45,8 +45,7 @@
           </li>
         @endcan
 
-        @can('update', Consumable::class)
-
+        @can('update', $consumable)
           <li class="pull-right">
             <a href="#" data-toggle="modal" data-target="#uploadFileModal">
               <i class="fas fa-paperclip" aria-hidden="true"></i> {{ trans('button.upload') }}
@@ -156,7 +155,7 @@
 
                       <td>
                         @if ($file->note)
-                          {{ $file->note }}
+                          {!! nl2br(Helper::parseEscapedMarkedownInline($file->note)) !!}
                         @endif
                       </td>
                       <td>
@@ -200,7 +199,7 @@
             <div class="row">
               <div class="col-md-12">
 
-          
+
                 @if ($consumable->image!='')
                 <div class="col-md-12 text-center">
                   <a href="{{ Storage::disk('public')->url('consumables/'.e($consumable->image)) }}" data-toggle="lightbox">
@@ -260,7 +259,7 @@
             {{ trans('general.checkout') }}
           </a>
         @else
-          <button style="margin-bottom:10px; width:100%"" class="btn btn-primary btn-sm disabled">
+          <button style="margin-bottom:10px; width:100%" class="btn btn-primary btn-sm disabled">
             {{ trans('general.checkout') }}
           </button>
         @endif
@@ -269,20 +268,20 @@
     @endcan
 
     @if ($consumable->notes)
-       
+
     <div class="col-md-12">
       <strong>
         {{ trans('general.notes') }}:
       </strong>
               </div>
     <div class="col-md-12">
-      {!! nl2br(e($consumable->notes)) !!}
+      {!! nl2br(Helper::parseEscapedMarkedownInline($consumable->notes)) !!}
             </div>
           </div>
   @endif
 
     </div>
-    
+
   </div> <!-- /.col-md-3-->
 </div> <!-- /.row-->
 

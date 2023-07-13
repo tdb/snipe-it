@@ -25,6 +25,8 @@
     {{ trans('general.archived') }}
   @elseif (Request::get('status')=='Deleted')
     {{ trans('general.deleted') }}
+  @elseif (Request::get('status')=='byod')
+    {{ trans('general.byod') }}
   @endif
 @else
 {{ trans('general.all') }}
@@ -60,15 +62,9 @@
        
           <div class="row">
             <div class="col-md-12">
-              
-              @if (Request::get('status')!='Deleted')
 
-
-
-                @include('partials.asset-bulk-actions')
+                @include('partials.asset-bulk-actions', ['status' => Request::get('status')])
                    
-              @endif
-
               <table
                 data-advanced-search="true"
                 data-click-to-select="true"
