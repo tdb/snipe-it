@@ -6,6 +6,7 @@ use App\Models\Traits\Searchable;
 use App\Presenters\Presentable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Watson\Validating\ValidatingTrait;
 
@@ -29,6 +30,7 @@ class AssetModel extends SnipeModel
     protected $rules = [
         'name'              => 'required|min:1|max:255',
         'model_number'      => 'max:255|nullable',
+        'min_amt'           => 'integer|min:0|nullable',
         'category_id'       => 'required|integer|exists:categories,id',
         'manufacturer_id'   => 'integer|exists:manufacturers,id|nullable',
         'eol'               => 'integer:min:0|max:240|nullable',
@@ -44,15 +46,6 @@ class AssetModel extends SnipeModel
     protected $injectUniqueIdentifier = true;
     use ValidatingTrait;
 
-    public function setEolAttribute($value)
-    {
-        if ($value == '') {
-            $value = 0;
-        }
-
-        $this->attributes['eol'] = $value;
-    }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -65,6 +58,7 @@ class AssetModel extends SnipeModel
         'fieldset_id',
         'image',
         'manufacturer_id',
+        'min_amt',
         'model_number',
         'name',
         'notes',
@@ -186,6 +180,21 @@ class AssetModel extends SnipeModel
         return false;
     }
 
+
+    /**
+     * Checks if the model is deletable
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v6.3.4]
+     * @return bool
+     */
+    public function isDeletable()
+    {
+        return Gate::allows('delete', $this)
+            && ($this->assets_count == 0)
+            && ($this->deleted_at == '');
+    }
+
     /**
      * Get uploads for this model
      *
@@ -288,5 +297,10 @@ class AssetModel extends SnipeModel
     public function scopeOrderCategory($query, $order)
     {
         return $query->leftJoin('categories', 'models.category_id', '=', 'categories.id')->orderBy('categories.name', $order);
+    }
+
+    public function scopeOrderFieldset($query, $order)
+    {
+        return $query->leftJoin('custom_fieldsets', 'models.fieldset_id', '=', 'custom_fieldsets.id')->orderBy('custom_fieldsets.name', $order);
     }
 }

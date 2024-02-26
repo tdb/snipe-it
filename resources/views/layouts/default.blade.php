@@ -140,17 +140,15 @@
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             @can('index', \App\Models\Asset::class)
-                                <li aria-hidden="true"
-                                    {!! (Request::is('hardware*') ? ' class="active"' : '') !!} tabindex="-1">
+                                <li aria-hidden="true"{!! (Request::is('hardware*') ? ' class="active"' : '') !!}>
                                     <a href="{{ url('hardware') }}" accesskey="1" tabindex="-1">
-                                        <i class="fas fa-barcode fa-fw" aria-hidden="true"></i>
+                                        <i class="fas fa-barcode fa-fw"></i>
                                         <span class="sr-only">{{ trans('general.assets') }}</span>
                                     </a>
                                 </li>
                             @endcan
                             @can('view', \App\Models\License::class)
-                                <li aria-hidden="true"
-                                    {!! (Request::is('licenses*') ? ' class="active"' : '') !!} tabindex="-1">
+                                <li aria-hidden="true"{!! (Request::is('licenses*') ? ' class="active"' : '') !!}>
                                     <a href="{{ route('licenses.index') }}" accesskey="2" tabindex="-1">
                                         <i class="far fa-save fa-fw"></i>
                                         <span class="sr-only">{{ trans('general.licenses') }}</span>
@@ -158,8 +156,7 @@
                                 </li>
                             @endcan
                             @can('index', \App\Models\Accessory::class)
-                                <li aria-hidden="true"
-                                    {!! (Request::is('accessories*') ? ' class="active"' : '') !!} tabindex="-1">
+                                <li aria-hidden="true"{!! (Request::is('accessories*') ? ' class="active"' : '') !!}>
                                     <a href="{{ route('accessories.index') }}" accesskey="3" tabindex="-1">
                                         <i class="far fa-keyboard fa-fw"></i>
                                         <span class="sr-only">{{ trans('general.accessories') }}</span>
@@ -233,7 +230,8 @@
                                             <li {!! (Request::is('accessories/create') ? 'class="active"' : '') !!}>
                                                 <a href="{{ route('accessories.create') }}" tabindex="-1">
                                                     <i class="far fa-keyboard fa-fw" aria-hidden="true"></i>
-                                                    {{ trans('general.accessory') }}</a>
+                                                    {{ trans('general.accessory') }}
+                                                </a>
                                             </li>
                                         @endcan
                                         @can('create', \App\Models\Consumable::class)
@@ -624,7 +622,7 @@
                         @can('import')
                             <li{!! (Request::is('import/*') ? ' class="active"' : '') !!}>
                                 <a href="{{ route('imports.index') }}">
-                                    <i class="fas fa-cloud-download-alt fa-fw" aria-hidden="true"></i>
+                                    <i class="fas fa-cloud-upload-alt fa-fw" aria-hidden="true"></i>
                                     <span>{{ trans('general.import') }}</span>
                                 </a>
                             </li>
@@ -849,9 +847,15 @@
                 </section>
 
             </div><!-- /.content-wrapper -->
-            <footer class="main-footer hidden-print">
+            <footer class="main-footer hidden-print" style="display:grid;flex-direction:column;">
 
-                <div class="pull-right hidden-xs">
+                <div class="1hidden-xs pull-left">
+                    <div class="pull-left" >
+                        <a target="_blank" href="https://snipeitapp.com" rel="noopener">Snipe-IT</a> is open source software,
+                        made with <i class="fas fa-heart" style="color: #a94442; font-size: 10px" aria-hidden="true"></i><span
+                                class="sr-only">love</span> by <a href="https://twitter.com/snipeitapp" rel="noopener">@snipeitapp</a>.
+                    </div>
+                    <div class="pull-right">
                     @if ($snipeSettings->version_footer!='off')
                         @if (($snipeSettings->version_footer=='on') || (($snipeSettings->version_footer=='admin') && (Auth::user()->isSuperUser()=='1')))
                             &nbsp; <strong>Version</strong> {{ config('version.app_version') }} -
@@ -874,23 +878,15 @@
                            href="{{  $snipeSettings->privacy_policy_link }}"
                            target="_new">{{ trans('admin/settings/general.privacy_policy') }}</a>
                     @endif
-
-
-                </div>
-                @if ($snipeSettings->footer_text!='')
-                    <div class="pull-right">
-                        {!!  Helper::parseEscapedMarkedown($snipeSettings->footer_text)  !!}
                     </div>
-                @endif
-
-
-                <a target="_blank" href="https://snipeitapp.com" rel="noopener">Snipe-IT</a> is open source software,
-                made with <i class="fas fa-heart" style="color: #a94442; font-size: 10px" aria-hidden="true"></i><span
-                        class="sr-only">love</span> by <a href="https://twitter.com/snipeitapp" rel="noopener">@snipeitapp</a>.
+                    <br>
+                    @if ($snipeSettings->footer_text!='')
+                        <div class="pull-left">
+                            {!!  Helper::parseEscapedMarkedown($snipeSettings->footer_text)  !!}
+                        </div>
+                    @endif
+                </div>
             </footer>
-
-
-
         </div><!-- ./wrapper -->
 
 
@@ -961,6 +957,11 @@
 
         <script nonce="{{ csrf_token() }}">
 
+            var clipboard = new ClipboardJS('.js-copy-link');
+
+            clipboard.on('success', function(e) {
+                $('.js-copy-link').tooltip('hide').attr('data-original-title', '{{ trans('general.copied') }}').tooltip('show');
+            });
 
             // ignore: 'input[type=hidden]' is required here to validate the select2 lists
             $.validate({
@@ -979,7 +980,7 @@
                     container: 'body',
                     animation: true,
                 });
-                
+
                 $('[data-toggle="popover"]').popover();
                 $('.select2 span').addClass('needsclick');
                 $('.select2 span').removeAttr('title');
@@ -1008,6 +1009,14 @@
             $(document).on('click', '[data-toggle="lightbox"]', function (event) {
                 event.preventDefault();
                 $(this).ekkoLightbox();
+            });
+            //This prevents multi-click checkouts for accessories, components, consumables
+            $(document).ready(function () {
+                $('#checkout_form').submit(function (event) {
+                    event.preventDefault();
+                    $('#submit_button').prop('disabled', true);
+                    this.submit();
+                });
             });
 
 

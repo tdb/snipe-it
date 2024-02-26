@@ -125,7 +125,10 @@
                     </div>
                     <div class="col-md-9">
                       @can('viewKeys', $license)
-                        {!! nl2br(e($license->serial)) !!}
+                        <span class="js-copy">{!! nl2br(e($license->serial)) !!}</span>
+                          <i class="fa-regular fa-clipboard js-copy-link" data-clipboard-target=".js-copy" aria-hidden="true" data-tooltip="true" data-placement="top" title="{{ trans('general.copy_to_clipboard') }}">
+                            <span class="sr-only">{{ trans('general.copy_to_clipboard') }}</span>
+                          </i>
                       @else
                         ------------
                       @endcan
@@ -179,9 +182,13 @@
                       </strong>
                     </div>
                     <div class="col-md-9">
-                      <a href="{{ route('suppliers.show', $license->supplier_id) }}">
-                        {{ $license->supplier->name }}
-                      </a>
+                      @if ($license->supplier)
+                        <a href="{{ route('suppliers.show', $license->supplier_id) }}">
+                          {{ $license->supplier->name }}
+                        </a>
+                      @else
+                      {{ trans('general.deleted') }}
+                      @endif
                     </div>
                   </div>
                 @endif
@@ -531,6 +538,7 @@
                   <th class="col-sm-2" data-visible="false" data-sortable="true" data-field="created_at" data-formatter="dateDisplayFormatter">{{ trans('general.record_created') }}</th>
                   <th class="col-sm-2"data-visible="true" data-sortable="true" data-field="admin" data-formatter="usersLinkObjFormatter">{{ trans('general.admin') }}</th>
                   <th class="col-sm-2" data-sortable="true"  data-visible="true" data-field="action_type">{{ trans('general.action') }}</th>
+                  <th class="col-sm-2" data-field="file" data-visible="false" data-formatter="fileUploadNameFormatter">{{ trans('general.file_name') }}</th>
                   <th class="col-sm-2" data-sortable="true"  data-visible="true" data-field="item" data-formatter="polymorphicItemFormatter">{{ trans('general.item') }}</th>
                   <th class="col-sm-2" data-visible="true" data-field="target" data-formatter="polymorphicItemFormatter">{{ trans('general.target') }}</th>
                   <th class="col-sm-2" data-sortable="true" data-visible="true" data-field="note">{{ trans('general.notes') }}</th>
@@ -582,17 +590,23 @@
     @endcan
 
     @can('checkin', $license)
-
-      @if (($license->seats - $license->availCount()->count()) > 0 )
-        <a href="#" class="btn btn-block bg-purple" style="margin-bottom: 25px;" data-toggle="modal" data-tooltip="true"  data-target="#checkinFromAllModal" data-content="{{ trans('general.sure_to_delete') }} data-title="{{  trans('general.delete') }}" onClick="return false;">
-          {{ trans('admin/licenses/general.bulk.checkin_all.button') }}
-        </a>
-      @else
+  
+      @if (($license->seats - $license->availCount()->count()) <= 0 )
         <span data-tooltip="true" title=" {{ trans('admin/licenses/general.bulk.checkin_all.disabled_tooltip') }}">
             <a href="#" class="btn btn-block bg-purple disabled" style="margin-bottom: 25px;">
              {{ trans('admin/licenses/general.bulk.checkin_all.button') }}
             </a>
-          </span>
+        </span>
+      @elseif (! $license->reassignable)
+        <span data-tooltip="true" title=" {{ trans('admin/licenses/general.bulk.checkin_all.disabled_tooltip_reassignable') }}">
+            <a href="#" class="btn btn-block bg-purple disabled" style="margin-bottom: 25px;">
+             {{ trans('admin/licenses/general.bulk.checkin_all.button') }}
+            </a>
+        </span>
+      @else
+        <a href="#" class="btn btn-block bg-purple" style="margin-bottom: 25px;" data-toggle="modal" data-tooltip="true"  data-target="#checkinFromAllModal" data-content="{{ trans('general.sure_to_delete') }} data-title="{{  trans('general.delete') }}" onClick="return false;">
+          {{ trans('admin/licenses/general.bulk.checkin_all.button') }}
+        </a>
       @endif
     @endcan
 
