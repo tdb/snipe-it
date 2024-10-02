@@ -8,7 +8,7 @@ use App\Models\SnipeModel;
 use App\Models\Traits\Searchable;
 use App\Models\User;
 use App\Presenters\Presentable;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -33,7 +33,7 @@ class Location extends SnipeModel
         'country'       => 'min:2|max:191|nullable',
         'zip'           => 'max:10|nullable',
         'manager_id'    => 'exists:users,id|nullable',
-        'parent_id'     => 'non_circular:locations,id',
+        'parent_id'     => 'nullable|exists:locations,id|non_circular:locations,id',
     ];
 
     protected $casts = [
@@ -106,11 +106,13 @@ class Location extends SnipeModel
      */
     public function isDeletable()
     {
+
         return Gate::allows('delete', $this)
-                && ($this->assets_count === 0)
-                && ($this->assigned_assets_count === 0)
-                && ($this->children_count === 0)
-                && ($this->users_count === 0);
+                && ($this->assets_count == 0)
+                && ($this->assigned_assets_count == 0)
+                && ($this->children_count == 0)
+                && ($this->accessories_count == 0)
+                && ($this->users_count == 0);
     }
 
     /**

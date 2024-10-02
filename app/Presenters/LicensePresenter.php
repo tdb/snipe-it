@@ -33,6 +33,7 @@ class LicensePresenter extends Presenter
                 'field' => 'name',
                 'searchable' => true,
                 'sortable' => true,
+                'switchable' => false,
                 'title' => trans('general.name'),
                 'formatter' => 'licensesLinkFormatter',
             ], [
@@ -89,7 +90,14 @@ class LicensePresenter extends Presenter
                 'searchable' => false,
                 'sortable' => true,
                 'title' => trans('admin/accessories/general.remaining'),
-            ], [
+            ],
+            [
+                'field' => 'min_amt',
+                'searchable' => false,
+                'sortable' => true,
+                'title' => trans('mail.min_QTY'),
+                'formatter' => 'minAmtFormatter',
+            ],[
                 'field' => 'purchase_date',
                 'searchable' => true,
                 'sortable' => true,
@@ -151,6 +159,13 @@ class LicensePresenter extends Presenter
                 'visible' => false,
                 'title' => trans('general.order_number'),
             ], [
+                'field' => 'created_by',
+                'searchable' => false,
+                'sortable' => true,
+                'title' => trans('general.created_by'),
+                'visible' => false,
+                'formatter' => 'usersLinkObjFormatter',
+            ], [
                 'field' => 'created_at',
                 'searchable' => false,
                 'sortable' => true,
@@ -179,7 +194,7 @@ class LicensePresenter extends Presenter
             'field' => 'checkincheckout',
             'searchable' => false,
             'sortable' => false,
-            'switchable' => true,
+            'switchable' => false,
             'title' => trans('general.checkin').'/'.trans('general.checkout'),
             'visible' => true,
             'formatter' => 'licensesInOutFormatter',
@@ -273,7 +288,7 @@ class LicensePresenter extends Presenter
                 'field' => 'checkincheckout',
                 'searchable' => false,
                 'sortable' => false,
-                'switchable' => true,
+                'switchable' => false,
                 'title' => trans('general.checkin').'/'.trans('general.checkout'),
                 'visible' => true,
                 'formatter' => 'licenseSeatInOutFormatter',

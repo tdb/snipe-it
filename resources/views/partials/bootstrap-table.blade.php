@@ -5,11 +5,14 @@
 @push('js')
 
 <script src="{{ url(mix('js/dist/bootstrap-table.js')) }}"></script>
+<script src="{{ url(mix('js/dist/bootstrap-table-locale-all.min.js')) }}"></script>
+
+<!-- load english again here, even though it's in the all.js file, because if BS table doesn't have the translation, it otherwise defaults to chinese. See https://bootstrap-table.com/docs/api/table-options/#locale -->
+<script src="{{ url(mix('js/dist/bootstrap-table-en-US.min.js')) }}"></script>
 
 <script nonce="{{ csrf_token() }}">
     $(function () {
 
-        var locale = '{{ config('app.locale') }}';
         var blockedFields = "searchable,sortable,switchable,title,visible,formatter,class".split(",");
 
         var keyBlocked = function(key) {
@@ -46,16 +49,18 @@
             stickyHeader: true,
             stickyHeaderOffsetLeft: parseInt($('body').css('padding-left'), 10),
             stickyHeaderOffsetRight: parseInt($('body').css('padding-right'), 10),
-            locale: locale,
             undefinedText: '',
             iconsPrefix: 'fa',
             cookieStorage: '{{ config('session.bs_table_storage') }}',
             cookie: true,
             cookieExpire: '2y',
+            showColumnsToggleAll: true,
+            minimumCountColumns: 2,
             mobileResponsive: true,
             maintainSelected: true,
             trimOnSearch: false,
             showSearchClearButton: true,
+            addrbar: {{ (config('session.bs_table_addrbar') == 'true') ? 'true' : 'false'}}, // deeplink search phrases, sorting, etc
             paginationFirstText: "{{ trans('general.first') }}",
             paginationLastText: "{{ trans('general.last') }}",
             paginationPreText: "{{ trans('general.previous') }}",
@@ -73,7 +78,7 @@
                 return newParams;
             },
             formatLoadingMessage: function () {
-                return '<h2><i class="fas fa-spinner fa-spin" aria-hidden="true"></i> {{ trans('general.loading') }} </h4>';
+                return '<h2><x-icon type="spinner" /> {{ trans('general.loading') }} </h2>';
             },
             icons: {
                 advancedSearchIcon: 'fas fa-search-plus',
@@ -85,11 +90,14 @@
                 export: 'fa-download',
                 clearSearch: 'fa-times'
             },
-                exportOptions: export_options,
-
+            locale: '{{ app()->getLocale() }}',
+            exportOptions: export_options,
             exportTypes: ['xlsx', 'excel', 'csv', 'pdf','json', 'xml', 'txt', 'sql', 'doc' ],
             onLoadSuccess: function () {
                 $('[data-tooltip="true"]').tooltip(); // Needed to attach tooltips after ajax call
+            },
+            formatNoMatches: function () {
+                return '{{ trans('table.no_matching_records') }}';
             }
 
             });
@@ -291,14 +299,14 @@
             }
 
             if ((row.available_actions) && (row.available_actions.clone === true)) {
-                actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '/clone" class="actions btn btn-sm btn-info" data-tooltip="true" title="{{ trans('general.clone_item') }}"><i class="far fa-clone" aria-hidden="true"></i><span class="sr-only">Clone</span></a>&nbsp;';
+                actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '/clone" class="actions btn btn-sm btn-info" data-tooltip="true" title="{{ trans('general.clone_item') }}"><x-icon type="clone" /><span class="sr-only">{{ trans('general.clone_item') }}</span></a>&nbsp;';
             }
 
             if ((row.available_actions) && (row.available_actions.update === true)) {
-                actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '/edit" class="actions btn btn-sm btn-warning" data-tooltip="true" title="{{ trans('general.update') }}"><i class="fas fa-pencil-alt" aria-hidden="true"></i><span class="sr-only">{{ trans('general.update') }}</span></a>&nbsp;';
+                actions += '<a href="{{ config('app.url') }}/' + dest + '/' + row.id + '/edit" class="actions btn btn-sm btn-warning" data-tooltip="true" title="{{ trans('general.update') }}"><x-icon type="edit" /><span class="sr-only">{{ trans('general.update') }}</span></a>&nbsp;';
             } else {
                 if ((row.available_actions) && (row.available_actions.update != true)) {
-                    actions += '<span data-tooltip="true" title="{{ trans('general.cannot_be_edited') }}"><a class="btn btn-warning btn-sm disabled" onClick="return false;"><i class="fas fa-pencil-alt"></i></a></span>&nbsp;';
+                    actions += '<span data-tooltip="true" title="{{ trans('general.cannot_be_edited') }}"><a class="btn btn-warning btn-sm disabled" onClick="return false;"><x-icon type="edit" /></a></span>&nbsp;';
                 }
             }
 
@@ -315,11 +323,11 @@
                     + ' data-toggle="modal" '
                     + ' data-content="{{ trans('general.sure_to_delete') }} ' + name_for_box + '?" '
                     + ' data-title="{{  trans('general.delete') }}" onClick="return false;">'
-                    + '<i class="fas fa-trash" aria-hidden="true"></i><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
+                    + '<x-icon type="delete" /><span class="sr-only">{{ trans('general.delete') }}</span></a>&nbsp;';
             } else {
                 // Do not show the delete button on things that are already deleted
                 if ((row.available_actions) && (row.available_actions.restore != true)) {
-                    actions += '<span data-tooltip="true" title="{{ trans('general.cannot_be_deleted') }}"><a class="btn btn-danger btn-sm delete-asset disabled" onClick="return false;"><i class="fas fa-trash"></i></a></span>&nbsp;';
+                    actions += '<span data-tooltip="true" title="{{ trans('general.cannot_be_deleted') }}"><a class="btn btn-danger btn-sm delete-asset disabled" onClick="return false;"><x-icon type="delete" /><span class="sr-only">{{ trans('general.cannot_be_deleted') }}</span></a></span>&nbsp;';
                 }
 
             }
@@ -328,7 +336,7 @@
             if ((row.available_actions) && (row.available_actions.restore === true)) {
                 actions += '<form style="display: inline;" method="POST" action="{{ config('app.url') }}/' + dest + '/' + row.id + '/restore"> ';
                 actions += '@csrf';
-                actions += '<button class="btn btn-sm btn-warning" data-tooltip="true" title="{{ trans('general.restore') }}"><i class="fas fa-retweet"></i></button>&nbsp;';
+                actions += '<button class="btn btn-sm btn-warning" data-tooltip="true" title="{{ trans('general.restore') }}"><x-icon type="restore" /><span class="sr-only">{{ trans('general.restore') }}</span></button>&nbsp;';
             }
 
             actions +='</nobr>';
@@ -411,13 +419,11 @@
         // add some stuff to get the value of the select2 option here?
 
         if ((row.available_actions) && (row.available_actions.bulk_selectable) && (row.available_actions.bulk_selectable.delete !== true)) {
-            console.log('value for ID ' + row.id + ' is NOT true:' + row.available_actions.bulk_selectable.delete);
             return {
                 disabled:true,
                 //checked: false, <-- not sure this will work the way we want?
             }
         }
-        console.log('value for ID ' + row.id + ' IS true:' + row.available_actions.bulk_selectable.delete);
     }
 
 
@@ -429,7 +435,7 @@
         if ((row.available_actions.checkout === true) && (row.user_can_checkout === true) && ((!row.asset_id) && (!row.assigned_to))) {
             return '<a href="{{ config('app.url') }}/licenses/' + row.license_id + '/checkout/'+row.id+'" class="btn btn-sm bg-maroon" data-tooltip="true" title="{{ trans('general.checkout_tooltip') }}">{{ trans('general.checkout') }}</a>';
         } else {
-            return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="Check in this license seat.">{{ trans('general.checkin') }}</a>';
+            return '<a href="{{ config('app.url') }}/licenses/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkin') }}</a>';
         }
 
     }
@@ -456,9 +462,9 @@
             // The user is allowed to check items in
             } else if (row.available_actions.checkin == true)  {
                 if (row.assigned_to) {
-                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="Check this item in so it is available for re-imaging, re-issue, etc.">{{ trans('general.checkin') }}</a>';
+                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkin') }}</a>';
                 } else if (row.assigned_pivot_id) {
-                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.assigned_pivot_id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="Check this item in so it is available for re-imaging, re-issue, etc.">{{ trans('general.checkin') }}</a>';
+                    return '<a href="{{ config('app.url') }}/' + destination + '/' + row.assigned_pivot_id + '/checkin" class="btn btn-sm bg-purple" data-tooltip="true" title="{{ trans('general.checkin_tooltip') }}">{{ trans('general.checkin') }}</a>';
                 }
 
             }
@@ -476,7 +482,7 @@
         } else if (value.available_actions.cancel == true)  {
             return '<form action="{{ config('app.url') }}/account/request-asset/'+ value.id + '" method="POST">@csrf<button class="btn btn-danger btn-sm" data-tooltip="true" title="Cancel this item request">{{ trans('button.cancel') }}</button></form>';
         } else if (value.available_actions.request == true)  {
-            return '<form action="{{ config('app.url') }}/account/request-asset/'+ value.id + '" method="POST">@csrf<button class="btn btn-primary btn-sm" data-tooltip="true" title="Request this item">{{ trans('button.request') }}</button></form>';
+            return '<form action="{{ config('app.url') }}/account/request-asset/'+ value.id + '" method="POST">@csrf<button class="btn btn-primary btn-sm" data-tooltip="true" title="{{ trans('general.request_item') }}">{{ trans('button.request') }}</button></form>';
         }
 
     }
@@ -550,7 +556,7 @@
                     } else if (row.custom_fields[field_column_plain].field_format=='BOOLEAN') {
                         return (row.custom_fields[field_column_plain].value == 1) ? "<span class='fas fa-check-circle' style='color:green'>" : "<span class='fas fa-times-circle' style='color:red' />";
                     } else if (row.custom_fields[field_column_plain].field_format=='EMAIL') {
-                        return '<a href="mailto:' + row.custom_fields[field_column_plain].value + '" style="white-space: nowrap" data-tooltip="true" title="{{ trans('general.send_email') }}"><i class="fa-regular fa-envelope" aria-hidden="true"></i> ' + row.custom_fields[field_column_plain].value + '</a>';
+                        return '<a href="mailto:' + row.custom_fields[field_column_plain].value + '" style="white-space: nowrap" data-tooltip="true" title="{{ trans('general.send_email') }}"><x-icon type="email" /> ' + row.custom_fields[field_column_plain].value + '</a>';
                     }
                 }
                 return row.custom_fields[field_column_plain].value;
@@ -570,7 +576,7 @@
 
         if (value) {
             if ((value.indexOf("{") === -1) || (value.indexOf("}") ===-1)) {
-                return '<nobr><a href="' + value + '" target="_blank" title="External link to ' + value + '" data-tooltip="true"><i class="fa fa-external-link"></i> ' + value + '</a></nobr>';
+                return '<nobr><a href="' + value + '" target="_blank" title="{{ trans('general.external_link_tooltip') }} ' + value + '" data-tooltip="true"><x-icon type="external-link" /> ' + value + '</a></nobr>';
             }
             return value;
         }
@@ -606,7 +612,7 @@
 
                 extra_pretty_index = prettyLog(pretty_index);
 
-                result += extra_pretty_index + ': <del>' + value[index].old + '</del>  <i class="fas fa-long-arrow-alt-right" aria-hidden="true"></i> ' + value[index].new + '<br>'
+                result += extra_pretty_index + ': <del>' + value[index].old + '</del>  <x-icon type="long-arrow-right" /> ' + value[index].new + '<br>'
             }
 
         return result;
@@ -621,11 +627,23 @@
         return frags.join(' ');
     }
 
+    // Show the warning if below min qty
+    function minAmtFormatter(row, value) {
+
+        if ((row) && (row!=undefined)) {
+            if (value.free_seats_count <= value.min_amt) {
+                return  '<span class="text-danger text-bold" data-tooltip="true" title="{{ trans('admin/licenses/general.below_threshold_short') }}">' + value.min_amt + '</span>';
+            }
+            return value.min_amt
+        }
+
+    }
+
 
     // Create a linked phone number in the table list
     function phoneFormatter(value) {
         if (value) {
-            return  '<span style="white-space: nowrap;"><a href="tel:' + value + '" data-tooltip="true" title="{{ trans('general.call') }}"><i class="fa-solid fa-phone" aria-hidden="true"></i> ' + value + '</a></span>';
+            return  '<span style="white-space: nowrap;"><a href="tel:' + value + '" data-tooltip="true" title="{{ trans('general.call') }}"><x-icon type="phone" /> ' + value + '</a></span>';
         }
     }
 
@@ -646,7 +664,7 @@
     function assetTagLinkFormatter(value, row) {
         if ((row.asset) && (row.asset.id)) {
             if (row.asset.deleted_at!='') {
-                return '<span style="white-space: nowrap;"><i class="fas fa-times text-danger"></i><span class="sr-only">{{ trans('admin/hardware/general.deleted') }}</span> <del><a href="{{ config('app.url') }}/hardware/' + row.asset.id + '" data-tooltip="true" title="{{ trans('admin/hardware/general.deleted') }}">' + row.asset.asset_tag + '</a></del></span>';
+                return '<span style="white-space: nowrap;"><x-icon type="x" class="text-danger" /><span class="sr-only">{{ trans('admin/hardware/general.deleted') }}</span> <del><a href="{{ config('app.url') }}/hardware/' + row.asset.id + '" data-tooltip="true" title="{{ trans('admin/hardware/general.deleted') }}">' + row.asset.asset_tag + '</a></del></span>';
             }
             return '<a href="{{ config('app.url') }}/hardware/' + row.asset.id + '">' + row.asset.asset_tag + '</a>';
         }
@@ -671,7 +689,7 @@
 
         if ((row.asset) && (row.asset.serial)) {
             if (row.asset.deleted_at!='') {
-                return '<span style="white-space: nowrap;"><i class="fas fa-times text-danger"></i><span class="sr-only">deleted</span> <del><a href="{{ config('app.url') }}/hardware/' + row.asset.id + '" data-tooltip="true" title="{{ trans('admin/hardware/general.deleted') }}">' + row.asset.serial + '</a></del></span>';
+                return '<span style="white-space: nowrap;"><x-icon type="x" class="text-danger" /><span class="sr-only">deleted</span> <del><a href="{{ config('app.url') }}/hardware/' + row.asset.id + '" data-tooltip="true" title="{{ trans('admin/hardware/general.deleted') }}">' + row.asset.serial + '</a></del></span>';
             }
             return '<a href="{{ config('app.url') }}/hardware/' + row.asset.id + '">' + row.asset.serial + '</a>';
         }
@@ -680,9 +698,9 @@
 
     function trueFalseFormatter(value) {
         if ((value) && ((value == 'true') || (value == '1'))) {
-            return '<i class="fas fa-check text-success"></i><span class="sr-only">{{ trans('general.true') }}</span>';
+            return '<x-icon type="checkmark" class="text-success" /><span class="sr-only">{{ trans('general.true') }}</span>';
         } else {
-            return '<i class="fas fa-times text-danger"></i><span class="sr-only">{{ trans('general.false') }}</span>';
+            return '<x-icon type="x" class="text-danger" /><span class="sr-only">{{ trans('general.false') }}</span>';
         }
     }
 
@@ -700,7 +718,7 @@
 
     function emailFormatter(value) {
         if (value) {
-            return '<a href="mailto:' + value + '" style="white-space: nowrap" data-tooltip="true" title="{{ trans('general.send_email') }}"><i class="fa-regular fa-envelope" aria-hidden="true"></i> ' + value + '</a>';
+            return '<a href="mailto:' + value + '" style="white-space: nowrap" data-tooltip="true" title="{{ trans('general.send_email') }}"><x-icon type="email" /> ' + value + '</a>';
         }
     }
 
@@ -769,7 +787,7 @@
     }
     function downloadFormatter(value) {
         if (value) {
-            return '<a href="' + value + '" target="_blank"><i class="fas fa-download"></i></a>';
+            return '<a href="' + value + '" target="_blank"><x-icon type="download" /></a>';
         }
     }
 
@@ -777,7 +795,7 @@
         if ((value) && (value.url) && (value.inlineable)) {
             return '<a href="' + value.url + '" data-toggle="lightbox" data-type="image"><img src="' + value.url + '" style="max-height: {{ $snipeSettings->thumbnail_max_h }}px; width: auto;" class="img-responsive"></a>';
         } else if ((value) && (value.url)) {
-            return '<a href="' + value.url + '" class="btn btn-default"><i class="fas fa-download"></i></a>';
+            return '<a href="' + value.url + '" class="btn btn-default"><x-icon type="download" /></a>';
         }
     }
 
@@ -787,6 +805,38 @@
         if ((value) && (value.filename) && (value.url)) {
             return '<a href="' + value.url + '">' + value.filename + '</a>';
         }
+    }
+
+    function linkToUserSectionBasedOnCount (count, id, section) {
+        if (count) {
+            return '<a href="{{ config('app.url') }}/users/' + id + '#' + section +'">' + count + '</a>';
+        }
+
+        return count;
+    }
+
+    function linkNumberToUserAssetsFormatter(value, row) {
+        return linkToUserSectionBasedOnCount(value, row.id, 'asset');
+    }
+
+    function linkNumberToUserLicensesFormatter(value, row) {
+        return linkToUserSectionBasedOnCount(value, row.id, 'licenses');
+    }
+
+    function linkNumberToUserConsumablesFormatter(value, row) {
+        return linkToUserSectionBasedOnCount(value, row.id, 'consumables');
+    }
+
+    function linkNumberToUserAccessoriesFormatter(value, row) {
+        return linkToUserSectionBasedOnCount(value, row.id, 'accessories');
+    }
+
+    function linkNumberToUserManagedUsersFormatter(value, row) {
+        return linkToUserSectionBasedOnCount(value, row.id, 'managed-users');
+    }
+
+    function linkNumberToUserManagedLocationsFormatter(value, row) {
+        return linkToUserSectionBasedOnCount(value, row.id, 'managed-locations');
     }
 
     function labelPerPageFormatter(value, row, index, field) {

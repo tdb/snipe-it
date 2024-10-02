@@ -2,7 +2,7 @@
 
 return [
 
-    'select_language' => 'اختر لغة',
+    'select_language' => 'Select a Language',
     'languages' => [
         'en-US'=> 'الإنجليزية، الولايات المتحدة',
         'en-GB'=> 'الإنجليزية، المملكة المتحدة',
@@ -40,7 +40,9 @@ return [
         'ms-MY'=> 'الملايو',
         'mi-NZ'=> 'Maori',
         'mn-MN'=> 'المنغولية',
-        'no-NO'=> 'النرويجية',
+        //'no-NO'=> 'Norwegian',
+        'nb-NO'=> 'Norwegian Bokmål',
+        //'nn-NO'=> 'Norwegian Nynorsk',
         'fa-IR'=> 'الفارسية',
         'pl-PL'=> 'البولندية',
         'pt-PT'=> 'البرتغالية',
@@ -50,6 +52,7 @@ return [
         'sr-CS' => 'Serbian (Latin)',
         'sk-SK'=> 'السلوفاكية',
         'sl-SI'=> 'السلوفينية',
+        'so-SO'=> 'Somali',
         'es-ES'=> 'الإسبانية',
         'es-CO'=> 'الإسبانية، كولومبيا',
         'es-MX'=> 'الإسبانية، المكسيك',
@@ -65,7 +68,7 @@ return [
         'zu-ZA'=> 'الزولو',
     ],
 
-    'select_country' => 'اختر دولة',
+    'select_country' => 'Select a Country',
     
     'countries' => [
         'AC'=>'جزيرة أسنشن',
@@ -132,6 +135,7 @@ return [
         'EC'=>'Ecuador',
         'EE'=>'إستونيا',
         'EG'=>'مصر',
+        'GB-ENG'=>'England',
         'ER'=>'إريتريا',
         'ES'=>'إسبانيا',
         'ET'=>'Ethiopia',
@@ -230,6 +234,7 @@ return [
         'NG'=>'Nigeria',
         'NI'=>'Nicaragua',
         'NL'=>'هولندا',
+        'GB-NIR' => 'Northern Ireland',
         'NO'=>'النرويج',
         'NP'=>'نيبال',
         'NR'=>'Nauru',
@@ -257,7 +262,7 @@ return [
         'RU'=>'الاتحاد الروسي',
         'RW'=>'Rwanda',
         'SA'=>'المملكة العربية السعودية',
-        'UK'=>'اسكتلندا',
+        'GB-SCT'=>'اسكتلندا',
         'SB'=>'جزر سليمان',
         'SC'=>'Seychelles',
         'SS'=>'جنوب السودان',
@@ -309,6 +314,7 @@ return [
         'VI'=>'جزر فرجن (الولايات المتحدة الأمريكية)',
         'VN'=>'Viet Nam',
         'VU'=>'Vanuatu',
+        'GB-WLS' =>'Wales',
         'WF'=>'جزر واليس وفوتونا',
         'WS'=>'Samoa',
         'YE'=>'اليمن',

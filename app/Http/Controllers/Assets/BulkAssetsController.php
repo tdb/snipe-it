@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Assets;
 
-use App\Models\Actionlog;
 use App\Helpers\Helper;
 use App\Http\Controllers\CheckInOutRequest;
 use App\Http\Controllers\Controller;
@@ -11,12 +10,17 @@ use App\Models\AssetModel;
 use App\Models\Statuslabel;
 use App\Models\Setting;
 use App\View\Label;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\AssetCheckoutRequest;
 use App\Models\CustomField;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BulkAssetsController extends Controller
 {
@@ -33,12 +37,10 @@ class BulkAssetsController extends Controller
      * action would make a lot more sense here and make things a lot more clear.
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @return View
      * @internal param int $assetId
      * @since [v2.0]
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit(Request $request)
+    public function edit(Request $request) : View | RedirectResponse
     {
         $this->authorize('view', Asset::class);
 
@@ -91,7 +93,62 @@ class BulkAssetsController extends Controller
         // This handles all of the pivot sorting below (versus the assets.* fields in the allowed_columns array)
         $column_sort = in_array($sort_override, $allowed_columns) ? $sort_override : 'assets.id';
 
-        $assets = Asset::with('assignedTo', 'location', 'model')->whereIn('assets.id', $asset_ids);
+        $assets = Asset::with('assignedTo', 'location', 'model')
+                ->whereIn('assets.id', $asset_ids)
+                ->withTrashed();
+
+        $assets = $assets->get();
+
+        if ($assets->isEmpty()) {
+            Log::debug('No assets were found for the provided IDs', ['ids' => $asset_ids]);
+            return redirect()->back()->with('error', trans('admin/hardware/message.update.assets_do_not_exist_or_are_invalid'));
+        }
+
+        $models = $assets->unique('model_id');
+        $modelNames = [];
+        foreach($models as $model) {
+            $modelNames[] = $model->model->name;
+        }
+
+        if ($request->filled('bulk_actions')) {
+
+
+            switch ($request->input('bulk_actions')) {
+                case 'labels':
+                    $this->authorize('view', Asset::class);
+
+                    return (new Label)
+                        ->with('assets', $assets)
+                        ->with('settings', Setting::getSettings())
+                        ->with('bulkedit', true)
+                        ->with('count', 0);
+
+                case 'delete':
+                    $this->authorize('delete', Asset::class);
+                    $assets->each(function ($assets) {
+                        $this->authorize('delete', $assets);
+                    });
+
+                    return view('hardware/bulk-delete')->with('assets', $assets);
+
+                case 'restore':
+                    $this->authorize('update', Asset::class);
+                    $assets = Asset::withTrashed()->find($asset_ids);
+                    $assets->each(function ($asset) {
+                        $this->authorize('delete', $asset);
+                    });
+                    return view('hardware/bulk-restore')->with('assets', $assets);
+
+                case 'edit':
+                    $this->authorize('update', Asset::class);
+
+                    return view('hardware/bulk')
+                        ->with('assets', $asset_ids)
+                        ->with('statuslabel_list', Helper::statusLabelList())
+                        ->with('models', $models->pluck(['model']))
+                        ->with('modelNames', $modelNames);
+            }
+        }
 
         switch ($sort_override) {
             case 'model':
@@ -128,54 +185,6 @@ class BulkAssetsController extends Controller
                 break;
         }
 
-        $assets = $assets->get();
-
-        $models = $assets->unique('model_id');
-        $modelNames = [];
-        foreach($models as $model) {
-            $modelNames[] = $model->model->name;
-        }
-
-        if ($request->filled('bulk_actions')) {
-
-
-            switch ($request->input('bulk_actions')) {
-                case 'labels':
-                    $this->authorize('view', Asset::class);
-
-                    return (new Label)
-                        ->with('assets', $assets)
-                        ->with('settings', Setting::getSettings())
-                        ->with('bulkedit', true)
-                        ->with('count', 0);
-
-                case 'delete':
-                    $this->authorize('delete', Asset::class);
-                    $assets->each(function ($assets) {
-                        $this->authorize('delete', $assets);
-                    });
-
-                    return view('hardware/bulk-delete')->with('assets', $assets);
-                   
-                case 'restore':
-                    $this->authorize('update', Asset::class);
-                    $assets = Asset::withTrashed()->find($asset_ids);
-                    $assets->each(function ($asset) {
-                        $this->authorize('delete', $asset);
-                    });
-                    return view('hardware/bulk-restore')->with('assets', $assets);
-
-                case 'edit':
-                    $this->authorize('update', Asset::class);
-
-                    return view('hardware/bulk')
-                        ->with('assets', $asset_ids)
-                        ->with('statuslabel_list', Helper::statusLabelList())
-                        ->with('models', $models->pluck(['model']))
-                        ->with('modelNames', $modelNames);
-            }
-        }
-
         return redirect()->back()->with('error', 'No action selected');
     }
 
@@ -183,11 +192,10 @@ class BulkAssetsController extends Controller
      * Save bulk edits
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
-     * @return Redirect
      * @internal param array $assets
      * @since [v2.0]
      */
-    public function update(Request $request)
+    public function update(Request $request) : RedirectResponse
     {
         $this->authorize('update', Asset::class);
         $has_errors = 0;
@@ -208,7 +216,7 @@ class BulkAssetsController extends Controller
         }
 
 
-        $assets = Asset::whereIn('id', array_keys($request->input('ids')))->get();
+        $assets = Asset::whereIn('id', $request->input('ids'))->get();
 
 
 
@@ -220,7 +228,8 @@ class BulkAssetsController extends Controller
          * its checkout status.
          */
 
-        if (($request->filled('purchase_date'))
+        if (($request->filled('name'))
+            || ($request->filled('purchase_date'))
             || ($request->filled('expected_checkin'))
             || ($request->filled('purchase_cost'))
             || ($request->filled('supplier_id'))
@@ -232,6 +241,7 @@ class BulkAssetsController extends Controller
             || ($request->filled('status_id'))
             || ($request->filled('model_id'))
             || ($request->filled('next_audit_date'))
+            || ($request->filled('null_name'))
             || ($request->filled('null_purchase_date'))
             || ($request->filled('null_expected_checkin_date'))
             || ($request->filled('null_next_audit_date'))
@@ -244,13 +254,14 @@ class BulkAssetsController extends Controller
                 $this->update_array = [];
 
                 /**
-                 * Leave out model_id and status here because we do math on that later. We have to do some extra
-                 * validation and checks on those two.
+                 * Leave out model_id and status here because we do math on that later. We have to do some
+                 * extra validation and checks on those two.
                  *
                  * It's tempting to make these match the request check above, but some of these values require
                  * extra work to make sure the data makes sense.
                  */
-                $this->conditionallyAddItem('purchase_date')
+                $this->conditionallyAddItem('name')
+                    ->conditionallyAddItem('purchase_date')
                     ->conditionallyAddItem('expected_checkin')
                     ->conditionallyAddItem('order_number')
                     ->conditionallyAddItem('requestable')
@@ -261,11 +272,36 @@ class BulkAssetsController extends Controller
                         $this->conditionallyAddItem($custom_field_column); 
                    }
 
+                if (!($asset->eol_explicit)) {
+					if ($request->filled('model_id')) {
+						$model = AssetModel::find($request->input('model_id'));
+						if ($model->eol > 0) {
+							if ($request->filled('purchase_date')) {
+								$this->update_array['asset_eol_date'] = Carbon::parse($request->input('purchase_date'))->addMonths($model->eol)->format('Y-m-d');
+							} else {
+								$this->update_array['asset_eol_date'] = Carbon::parse($asset->purchase_date)->addMonths($model->eol)->format('Y-m-d');
+							}
+						} else {
+							$this->update_array['asset_eol_date'] = null;
+						}
+					} elseif (($request->filled('purchase_date')) && ($asset->model->eol > 0)) {
+						$this->update_array['asset_eol_date'] = Carbon::parse($request->input('purchase_date'))->addMonths($asset->model->eol)->format('Y-m-d');
+					}
+				}                
+                
                 /**
                  * Blank out fields that were requested to be blanked out via checkbox
                  */
+                if ($request->input('null_name')=='1') {
+
+                    $this->update_array['name'] = null;
+                }
+
                 if ($request->input('null_purchase_date')=='1') {
                     $this->update_array['purchase_date'] = null;
+                    if (!($asset->eol_explicit)) {
+						$this->update_array['asset_eol_date'] = null;
+					}
                 }
 
                 if ($request->input('null_expected_checkin_date')=='1') {
@@ -373,28 +409,30 @@ class BulkAssetsController extends Controller
                     foreach ($asset->model->fieldset->fields as $field) {
 
                         if ((array_key_exists($field->db_column, $this->update_array)) && ($field->field_encrypted == '1')) {
-                            $decrypted_old = Helper::gracefulDecrypt($field, $asset->{$field->db_column});
+                            if (Gate::allows('admin')) {
+                                $decrypted_old = Helper::gracefulDecrypt($field, $asset->{$field->db_column});
 
-                            /*
-                             * Check if the decrypted existing value is different from one we just submitted
-                             * and if not, pull it out of the object since it shouldn't really be updating at all.
-                             * If we don't do this, it will try to re-encrypt it, and the same value encrypted two
-                             * different times will have different values, so it will *look* like it was updated
-                             * but it wasn't.
-                             */
-                            if ($decrypted_old != $this->update_array[$field->db_column]) {
-                                $asset->{$field->db_column} = \Crypt::encrypt($this->update_array[$field->db_column]);
-                            } else {
                                 /*
-                                 * Remove the encrypted custom field from the update_array, since nothing changed
+                                 * Check if the decrypted existing value is different from one we just submitted
+                                 * and if not, pull it out of the object since it shouldn't really be updating at all.
+                                 * If we don't do this, it will try to re-encrypt it, and the same value encrypted two
+                                 * different times will have different values, so it will *look* like it was updated
+                                 * but it wasn't.
                                  */
-                                unset($this->update_array[$field->db_column]);
-                                unset($asset->{$field->db_column});
-                            }
+                                if ($decrypted_old != $this->update_array[$field->db_column]) {
+                                    $asset->{$field->db_column} = Crypt::encrypt($this->update_array[$field->db_column]);
+                                } else {
+                                    /*
+                                     * Remove the encrypted custom field from the update_array, since nothing changed
+                                     */
+                                    unset($this->update_array[$field->db_column]);
+                                    unset($asset->{$field->db_column});
+                                }
 
-                            /*
-                             * These custom fields aren't encrypted, just carry on as usual
-                             */
+                                /*
+                                 * These custom fields aren't encrypted, just carry on as usual
+                                 */
+                            }
                         } else {
 
                             if ((array_key_exists($field->db_column, $this->update_array)) && ($asset->{$field->db_column} != $this->update_array[$field->db_column])) {
@@ -446,9 +484,8 @@ class BulkAssetsController extends Controller
     /**
      * Adds parameter to update array for an item if it exists in request
      * @param  string $field field name
-     * @return BulkAssetsController Model for Chaining
      */
-    protected function conditionallyAddItem($field)
+    protected function conditionallyAddItem($field) : BulkAssetsController
     {
         if (request()->filled($field)) {
             $this->update_array[$field] = request()->input($field);
@@ -462,12 +499,10 @@ class BulkAssetsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @param Request $request
-     * @return View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @internal param array $assets
      * @since [v2.0]
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request) : RedirectResponse
     {
         $this->authorize('delete', Asset::class);
 
@@ -479,12 +514,7 @@ class BulkAssetsController extends Controller
         if ($request->filled('ids')) {
             $assets = Asset::find($request->get('ids'));
             foreach ($assets as $asset) {
-                $update_array['deleted_at'] = date('Y-m-d H:i:s');
-                $update_array['assigned_to'] = null;
-
-                DB::table('assets')
-                    ->where('id', $asset->id)
-                    ->update($update_array);
+                $asset->delete();
             } // endforeach
 
             return redirect($bulk_back_url)->with('success', trans('admin/hardware/message.delete.success'));
@@ -496,27 +526,23 @@ class BulkAssetsController extends Controller
 
     /**
      * Show Bulk Checkout Page
-     * @return View View to checkout multiple assets
      */
-    public function showCheckout()
+    public function showCheckout() : View
     {
         $this->authorize('checkout', Asset::class);
-        // Filter out assets that are not deployable.
-
         return view('hardware/bulk-checkout');
     }
 
     /**
      * Process Multiple Checkout Request
-     * @return View
      */
-    public function storeCheckout(AssetCheckoutRequest $request)
+    public function storeCheckout(AssetCheckoutRequest $request) : RedirectResponse | ModelNotFoundException
     {
 
         $this->authorize('checkout', Asset::class);
 
         try {
-            $admin = Auth::user();
+            $admin = auth()->user();
 
             $target = $this->determineCheckoutTarget();
 
@@ -575,17 +601,19 @@ class BulkAssetsController extends Controller
         }
         
     }
-    public function restore(Request $request) {
+    public function restore(Request $request) : RedirectResponse
+    {
         $this->authorize('update', Asset::class);
-       $assetIds = $request->get('ids');
-      if (empty($assetIds)) {
-          return redirect()->route('hardware.index')->with('error', trans('admin/hardware/message.restore.nothing_updated'));
+        $assetIds = $request->get('ids');
+
+        if (empty($assetIds)) {
+            return redirect()->route('hardware.index')->with('error', trans('admin/hardware/message.restore.nothing_updated'));
         } else {
             foreach ($assetIds as $key => $assetId) {
-                    $asset = Asset::withTrashed()->find($assetId);
-                    $asset->restore(); 
+                $asset = Asset::withTrashed()->find($assetId);
+                $asset->restore();
             } 
-        return redirect()->route('hardware.index')->with('success', trans('admin/hardware/message.restore.success'));
+            return redirect()->route('hardware.index')->with('success', trans('admin/hardware/message.restore.success'));
         }
     }
 }

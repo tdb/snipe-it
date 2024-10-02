@@ -49,7 +49,7 @@ class Settings
         ]);
     }
 
-    public function disableWebhook(): Settings
+    public function disableSlackWebhook(): Settings
     {
         return $this->update([
             'webhook_selected' => '',
@@ -120,6 +120,10 @@ class Settings
             'ldap_pword' => "badly_encrypted_password!",
             'ldap_basedn' => 'CN=Users,DC=ad,DC=example,Dc=com'
         ]);
+    }
+    public function setEula($text = 'Default EULA text')
+    {
+        return $this->update(['default_eula_text' => $text]);
     }
 
     /**

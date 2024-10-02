@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ImageUploadRequest;
+use App\Models\Actionlog;
 use App\Models\Asset;
 use App\Models\Location;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\RedirectResponse;
+use \Illuminate\Contracts\View\View;
 /**
  * This controller handles all actions related to Locations for
  * the Snipe-IT Asset Management application.
@@ -25,10 +27,8 @@ class LocationsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @see LocationsController::getDatatable() method that generates the JSON response
      * @since [v1.0]
-     * @return \Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index()
+    public function index() : View
     {
         // Grab all the locations
         $this->authorize('view', Location::class);
@@ -42,10 +42,8 @@ class LocationsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @see LocationsController::postCreate() method that validates and stores the data
      * @since [v1.0]
-     * @return \Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create()
+    public function create() : View
     {
         $this->authorize('create', Location::class);
 
@@ -61,10 +59,8 @@ class LocationsController extends Controller
      * @see LocationsController::getCreate() method that makes the form
      * @since [v1.0]
      * @param ImageUploadRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function store(ImageUploadRequest $request)
+    public function store(ImageUploadRequest $request) : RedirectResponse
     {
         $this->authorize('create', Location::class);
         $location = new Location();
@@ -79,7 +75,7 @@ class LocationsController extends Controller
         $location->zip = $request->input('zip');
         $location->ldap_ou = $request->input('ldap_ou');
         $location->manager_id = $request->input('manager_id');
-        $location->user_id = Auth::id();
+        $location->created_by = auth()->id();
         $location->phone = request('phone');
         $location->fax = request('fax');
 
@@ -99,10 +95,8 @@ class LocationsController extends Controller
      * @see LocationsController::postCreate() method that validates and stores
      * @param int $locationId
      * @since [v1.0]
-     * @return \Illuminate\Contracts\View\View
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($locationId = null)
+    public function edit($locationId = null) : View | RedirectResponse
     {
         $this->authorize('update', Location::class);
         // Check if the location exists
@@ -120,11 +114,9 @@ class LocationsController extends Controller
      * @see LocationsController::getEdit() method that makes the form view
      * @param ImageUploadRequest $request
      * @param int $locationId
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @since [v1.0]
      */
-    public function update(ImageUploadRequest $request, $locationId = null)
+    public function update(ImageUploadRequest $request, $locationId = null) : RedirectResponse
     {
         $this->authorize('update', Location::class);
         // Check if the location exists
@@ -162,10 +154,8 @@ class LocationsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @param int $locationId
      * @since [v1.0]
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy($locationId)
+    public function destroy($locationId) : RedirectResponse
     {
         $this->authorize('delete', Location::class);
         if (is_null($location = Location::find($locationId))) {
@@ -186,7 +176,7 @@ class LocationsController extends Controller
             try {
                 Storage::disk('public')->delete('locations/'.$location->image);
             } catch (\Exception $e) {
-                \Log::error($e);
+                Log::error($e);
             }
         }
         $location->delete();
@@ -201,11 +191,16 @@ class LocationsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @param int $id
      * @since [v1.0]
-     * @return \Illuminate\Contracts\View\View
      */
-    public function show($id = null)
+    public function show($id = null) : View | RedirectResponse
     {
-        $location = Location::find($id);
+        $location = Location::withCount('assignedAssets as assigned_assets_count')
+            ->withCount('assets as assets_count')
+            ->withCount('rtd_assets as rtd_assets_count')
+            ->withCount('children as children_count')
+            ->withCount('users as users_count')
+            ->withTrashed()
+            ->find($id);
 
         if (isset($location->id)) {
             return view('locations/view', compact('location'));
@@ -214,7 +209,7 @@ class LocationsController extends Controller
         return redirect()->route('locations.index')->with('error', trans('admin/locations/message.does_not_exist'));
     }
 
-    public function print_assigned($id)
+    public function print_assigned($id) : View | RedirectResponse
     {
 
         if ($location = Location::where('id', $id)->first()) {
@@ -239,9 +234,8 @@ class LocationsController extends Controller
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @param int $locationId
      * @since [v6.0.14]
-     * @return \Illuminate\Contracts\View\View
      */
-    public function getClone($locationId = null)
+    public function getClone($locationId = null) : View | RedirectResponse
     {
         $this->authorize('create', Location::class);
 
@@ -262,7 +256,42 @@ class LocationsController extends Controller
     }
 
 
-    public function print_all_assigned($id)
+    /**
+     * Restore a given Asset Model (mark as un-deleted)
+     *
+     * @author [A. Gianotto] [<snipe@snipe.net>]
+     * @since [v1.0]
+     * @param int $id
+     */
+    public function postRestore($id) : RedirectResponse
+    {
+        $this->authorize('create', Location::class);
+
+        if ($location = Location::withTrashed()->find($id)) {
+
+            if ($location->deleted_at == '') {
+                return redirect()->back()->with('error', trans('general.not_deleted', ['item_type' => trans('general.location')]));
+            }
+
+            if ($location->restore()) {
+                $logaction = new Actionlog();
+                $logaction->item_type = Location::class;
+                $logaction->item_id = $location->id;
+                $logaction->created_at = date('Y-m-d H:i:s');
+                $logaction->created_by = auth()->id();
+                $logaction->logaction('restore');
+
+                return redirect()->route('locations.index')->with('success', trans('admin/locations/message.restore.success'));
+            }
+
+            // Check validation
+            return redirect()->back()->with('error', trans('general.could_not_restore', ['item_type' => trans('general.location'), 'error' => $location->getErrors()->first()]));
+        }
+
+        return redirect()->back()->with('error', trans('admin/models/message.does_not_exist'));
+
+    }
+    public function print_all_assigned($id) : View | RedirectResponse
     {
         if ($location = Location::where('id', $id)->first()) {
             $parent = Location::where('id', $location->parent_id)->first();
@@ -281,9 +310,8 @@ class LocationsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v6.3.1]
-     * @return \Illuminate\Contracts\View\View
      */
-    public function postBulkDelete(Request $request)
+    public function postBulkDelete(Request $request) : View | RedirectResponse
     {
         $locations_raw_array = $request->input('ids');
 
@@ -314,13 +342,19 @@ class LocationsController extends Controller
      *
      * @author [A. Gianotto] [<snipe@snipe.net>]
      * @since [v6.3.1]
-     * @return \Illuminate\Http\RedirectResponse
+
      */
-    public function postBulkDeleteStore(Request $request) {
+    public function postBulkDeleteStore(Request $request) : RedirectResponse
+    {
         $locations_raw_array = $request->input('ids');
 
         if ((is_array($locations_raw_array)) && (count($locations_raw_array) > 0)) {
-            $locations = Location::whereIn('id', $locations_raw_array)->get();
+            $locations = Location::whereIn('id', $locations_raw_array)
+                ->withCount('assignedAssets as assigned_assets_count')
+                ->withCount('assets as assets_count')
+                ->withCount('rtd_assets as rtd_assets_count')
+                ->withCount('children as children_count')
+                ->withCount('users as users_count')->get();
 
             $success_count = 0;
             $error_count = 0;
@@ -336,8 +370,8 @@ class LocationsController extends Controller
                 }
             }
 
-            \Log::debug('Success count: '.$success_count);
-            \Log::debug('Error count: '.$error_count);
+            Log::debug('Success count: '.$success_count);
+            Log::debug('Error count: '.$error_count);
             // Complete success
             if ($success_count == count($locations_raw_array)) {
                 return redirect()
@@ -351,7 +385,7 @@ class LocationsController extends Controller
             if ($error_count > 0) {
                 return redirect()
                     ->route('locations.index')
-                    ->with('warning', trans('general.bulk.partial_success',
+                    ->with('warning', trans('general.bulk.delete.partial',
                         ['success' => $success_count, 'error' => $error_count, 'object_type' => trans('general.locations')]
                     ));
                 }

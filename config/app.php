@@ -112,7 +112,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en-US',
+    'fallback_locale' => env('FALLBACK_APP_LOCALE', 'en-US'),
 
     /*
     |--------------------------------------------------------------------------
@@ -199,7 +199,10 @@ return [
     |
     */
 
-    'enable_csp' => env('ENABLE_CSP', false),
+    'enable_csp' => env('ENABLE_CSP', true),
+
+    'additional_csp_urls' => env('ADDITIONAL_CSP_URLS', ''),
+
 
 
     /*
@@ -239,7 +242,7 @@ return [
     |
     */
 
-    'min_php' => '7.4.0',
+    'min_php' => '8.1.2',
 
 
     /*
@@ -290,7 +293,6 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Spatie\Backup\BackupServiceProvider::class,
-        Fideloper\Proxy\TrustedProxyServiceProvider::class,
         PragmaRX\Google2FALaravel\ServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
         Laravel\Tinker\TinkerServiceProvider::class,
@@ -309,8 +311,10 @@ return [
         App\Providers\ValidationServiceProvider::class,
 
         /*
-        * Custom service provider
+        * Custom Service Providers...
         */
+        App\Providers\BladeServiceProvider::class,
+        App\Providers\LivewireServiceProvider::class,
         App\Providers\MacroServiceProvider::class,
         App\Providers\SamlServiceProvider::class,
 
@@ -368,7 +372,9 @@ return [
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
         'Image'     => Intervention\Image\ImageServiceProvider::class,
         'Carbon' => Carbon\Carbon::class,
-        'Helper' => App\Helpers\Helper::class, // makes it much easier to use 'Helper::blah' in blades (which is where we usually use this)
+        'Helper' => App\Helpers\Helper::class,
+        // makes it much easier to use 'Helper::blah' in blades (which is where we usually use this)
+        'Icon' => App\Helpers\IconHelper::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
 
@@ -424,5 +430,5 @@ return [
   */
 
     'escape_formulas' => env('CSV_ESCAPE_FORMULAS', true),
-
+    
 ];

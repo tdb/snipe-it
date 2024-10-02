@@ -2,7 +2,7 @@
 
 return [
 
-    'select_language' => 'Selectaţi o limbă',
+    'select_language' => 'Select a Language',
     'languages' => [
         'en-US'=> 'Engleză, SUA',
         'en-GB'=> 'Engleză, Marea Britanie',
@@ -40,7 +40,9 @@ return [
         'ms-MY'=> 'Malaeză',
         'mi-NZ'=> 'Maori',
         'mn-MN'=> 'Mongolie',
-        'no-NO'=> 'Norvegiană',
+        //'no-NO'=> 'Norwegian',
+        'nb-NO'=> 'Norwegian Bokmål',
+        //'nn-NO'=> 'Norwegian Nynorsk',
         'fa-IR'=> 'persană',
         'pl-PL'=> 'Poloneză',
         'pt-PT'=> 'Portugheză',
@@ -50,6 +52,7 @@ return [
         'sr-CS' => 'Serbian (Latin)',
         'sk-SK'=> 'Slovacă',
         'sl-SI'=> 'Slovenian',
+        'so-SO'=> 'Somali',
         'es-ES'=> 'Spaniolă',
         'es-CO'=> 'Spaniolă, Columbia',
         'es-MX'=> 'Spaniolă, Mexic',
@@ -65,7 +68,7 @@ return [
         'zu-ZA'=> 'Zulu',
     ],
 
-    'select_country' => 'Selectează o țară',
+    'select_country' => 'Select a Country',
     
     'countries' => [
         'AC'=>'Insula Ascension',
@@ -132,6 +135,7 @@ return [
         'EC'=>'Ecuador',
         'EE'=>'Estonia',
         'EG'=>'Egipt',
+        'GB-ENG'=>'England',
         'ER'=>'Eritreea',
         'ES'=>'Spania',
         'ET'=>'Ethiopia',
@@ -230,6 +234,7 @@ return [
         'NG'=>'Nigeria',
         'NI'=>'Nicaragua',
         'NL'=>'Olanda',
+        'GB-NIR' => 'Northern Ireland',
         'NO'=>'Norvegia',
         'NP'=>'Nepal',
         'NR'=>'Nauru',
@@ -257,7 +262,7 @@ return [
         'RU'=>'Federaţia Rusă',
         'RW'=>'Rwanda',
         'SA'=>'Arabia Saudită',
-        'UK'=>'Scoţia',
+        'GB-SCT'=>'Scoţia',
         'SB'=>'Insulele Solomon',
         'SC'=>'Seychelles',
         'SS'=>'Sudanul de Sud',
@@ -309,6 +314,7 @@ return [
         'VI'=>'Insulele Virgine Americane',
         'VN'=>'Viet Nam',
         'VU'=>'Vanuatu',
+        'GB-WLS' =>'Wales',
         'WF'=>'Insulele Wallis și Futuna',
         'WS'=>'Samoa',
         'YE'=>'Yemen',

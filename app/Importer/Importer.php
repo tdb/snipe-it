@@ -6,11 +6,13 @@ use App\Models\CustomField;
 use App\Models\Department;
 use App\Models\Setting;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use ForceUTF8\Encoding;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use League\Csv\Reader;
+use Illuminate\Support\Facades\Log;
 
 abstract class Importer
 {
@@ -20,7 +22,7 @@ abstract class Importer
      * @var
      */
     
-    protected $user_id;
+    protected $created_by;
     /**
      * Are we updating items in the import
      * @var bool
@@ -279,6 +281,13 @@ abstract class Importer
         }
     }
 
+    protected function addErrorToBag($item, $field,  $error_message)
+    {
+        if ($this->errorCallback) {
+            call_user_func($this->errorCallback, $item, $field, [$field => [$error_message]]);
+        }
+    }
+
     /**
      * Finds the user matching given data, or creates a new one if there is no match.
      * This is NOT used by the User Import, only for Asset/Accessory/etc where
@@ -323,9 +332,9 @@ abstract class Importer
         // If the full name and username is empty, bail out--we need this to extract first name (at the very least)
         if ((empty($user_array['username'])) && (empty($user_array['full_name'])) && (empty($user_array['first_name']))) {
             $this->log('Insufficient user data provided (Full name, first name or username is required) - skipping user creation.');
-            \Log::debug('User array: ');
-            \Log::debug(print_r($user_array, true));
-            \Log::debug(print_r($row, true));
+            Log::debug('User array: ');
+            Log::debug(print_r($user_array, true));
+            Log::debug(print_r($row, true));
             return false;
         }
 
@@ -373,7 +382,7 @@ abstract class Importer
         $user->activated = 1;
         $user->password = $this->tempPassword;
 
-        \Log::debug('Creating a user with the following attributes: '.print_r($user_array, true));
+        Log::debug('Creating a user with the following attributes: '.print_r($user_array, true));
 
         if ($user->save()) {
             $this->log('User '.$user_array['username'].' created');
@@ -386,7 +395,7 @@ abstract class Importer
     }
 
     /**
-     * Matches a user by user_id if user_name provided is a number
+     * Matches a user by created_by if user_name provided is a number
      * @param  string $user_name users full name from csv
      * @return User           User Matching ID
      */
@@ -403,13 +412,13 @@ abstract class Importer
     /**
      * Sets the Id of User performing import.
      *
-     * @param mixed $user_id the user id
+     * @param mixed $created_by the user id
      *
      * @return self
      */
-    public function setUserId($user_id)
+    public function setUserId($created_by)
     {
-        $this->user_id = $user_id;
+        $this->created_by = $created_by;
 
         return $this;
     }
@@ -548,6 +557,37 @@ abstract class Importer
         }
         $this->log('No matching Manager '.$user_manager_first_name.' '.$user_manager_last_name.' found. If their user account is being created through this import, you should re-process this file again. ');
 
+        return null;
+    }
+
+    /**
+     * Parse a date or return null
+     *
+     * @author A. Gianotto
+     * @since 7.0.0
+     * @param $field
+     * @param $format
+     * @return string|null
+
+     */
+    public function parseOrNullDate($field, $format = 'date') {
+
+        $date_format = 'Y-m-d';
+
+        if ($format == 'datetime') {
+            $date_format = 'Y-m-d H:i:s';
+        }
+
+        if (array_key_exists($field, $this->item) && $this->item[$field] != '') {
+
+            try {
+                $value = CarbonImmutable::parse($this->item[$field])->format($date_format);
+                return $value;
+            } catch (\Exception $e) {
+                $this->log('Unable to parse date: ' . $this->item[$field]);
+                return null;
+            }
+        }
         return null;
     }
 }

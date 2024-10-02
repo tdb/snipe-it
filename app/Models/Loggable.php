@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Setting;
 use App\Notifications\AuditNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 trait Loggable
 {
@@ -35,8 +36,8 @@ trait Loggable
     {
         $log = new Actionlog;
         $log = $this->determineLogItemType($log);
-        if (Auth::user()) {
-            $log->user_id = Auth::user()->id;
+        if (auth()->user()) {
+            $log->created_by = auth()->id();
         }
 
         if (! isset($target)) {
@@ -147,8 +148,8 @@ trait Loggable
             $log->action_date = date('Y-m-d H:i:s');
         }
 
-        if (Auth::user()) {
-            $log->user_id = Auth::user()->id;
+        if (auth()->user()) {
+            $log->created_by = auth()->id();
         }
 
         $changed = [];
@@ -186,7 +187,7 @@ trait Loggable
 //            try {
 //                $target->notify(new static::$checkinClass($params));
 //            } catch (\Exception $e) {
-//                \Log::debug($e);
+//                Log::debug($e);
 //            }
 //
 //        }
@@ -198,7 +199,7 @@ trait Loggable
 //            try {
 //                $recipient->notify(new static::$checkinClass($params));
 //            } catch (\Exception $e) {
-//                \Log::debug($e);
+//                Log::debug($e);
 //            }
 //
 //        }
@@ -224,14 +225,14 @@ trait Loggable
         }
         $log->location_id = ($location_id) ? $location_id : null;
         $log->note = $note;
-        $log->user_id = Auth::user()->id;
+        $log->created_by = auth()->id();
         $log->filename = $filename;
         $log->logaction('audit');
 
         $params = [
             'item' => $log->item,
             'filename' => $log->filename,
-            'admin' => $log->admin,
+            'admin' => $log->adminuser,
             'location' => ($location) ? $location->name : '',
             'note' => $note,
         ];
@@ -247,9 +248,9 @@ trait Loggable
      */
     public function logCreate($note = null)
     {
-        $user_id = -1;
-        if (Auth::user()) {
-            $user_id = Auth::user()->id;
+        $created_by = -1;
+        if (auth()->user()) {
+            $created_by = auth()->id();
         }
         $log = new Actionlog;
         if (static::class == LicenseSeat::class) {
@@ -261,7 +262,7 @@ trait Loggable
         }
         $log->location_id = null;
         $log->note = $note;
-        $log->user_id = $user_id;
+        $log->created_by = $created_by;
         $log->logaction('create');
         $log->save();
 
@@ -283,7 +284,7 @@ trait Loggable
             $log->item_type = static::class;
             $log->item_id = $this->id;
         }
-        $log->user_id = Auth::user()->id;
+        $log->created_by = auth()->id();
         $log->note = $note;
         $log->target_id = null;
         $log->created_at = date('Y-m-d H:i:s');
