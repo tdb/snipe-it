@@ -15,7 +15,14 @@
 <div><!-- livewire div - do not remove -->
     <form class="form-horizontal" role="form" wire:submit="submit">
         {{csrf_field()}}
-
+        @if (session()->has('warning'))
+            <div class="alert alert-warning">
+                {!! session('warning') !!}
+                @php
+                    session()->forget('warning'); // Clear the session flash immediately
+                @endphp
+            </div>
+        @endif
         <div class="row">
 
             <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
@@ -76,7 +83,7 @@
                         <!--Webhook endpoint-->
                         <div class="form-group{{ $errors->has('webhook_endpoint') ? ' error' : '' }}">
                             <div class="col-md-2">
-                                {{ Form::label('webhook_endpoint', trans('admin/settings/general.webhook_endpoint',['app' => $webhook_name ])) }}
+                                <label for="webhook_endpoint">{{ trans('admin/settings/general.webhook_endpoint',['app' => $webhook_name ]) }}</label>
                             </div>
                             <div class="col-md-9 required">
                                     <input type="text" wire:model.blur="webhook_endpoint" class="form-control" placeholder="{{$webhook_placeholder}}" value="{{old('webhook_endpoint', $webhook_endpoint)}}"{{ Helper::isDemoMode() ? ' disabled' : ''}}>
@@ -93,7 +100,7 @@
                         @if($webhook_selected != 'microsoft' && $webhook_selected!= 'google')
                             <div class="form-group{{ $errors->has('webhook_channel') ? ' error' : '' }}">
                                 <div class="col-md-2">
-                                    {{ Form::label('webhook_channel', trans('admin/settings/general.webhook_channel',['app' => $webhook_name ])) }}
+                                    <label for="webhook_channel">{{ trans('admin/settings/general.webhook_channel',['app' => $webhook_name ]) }}</label>
                                 </div>
                                 <div class="col-md-9 required">
                                         <input type="text" wire:model.blur="webhook_channel" class="form-control" placeholder="#IT-Ops" value="{{ old('webhook_channel', $webhook_channel) }}"{{ Helper::isDemoMode() ? ' disabled' : ''}}>
@@ -111,7 +118,7 @@
                         @if($webhook_selected != 'microsoft' && $webhook_selected != 'google')
                             <div class="form-group{{ $errors->has('webhook_botname') ? ' error' : '' }}">
                                 <div class="col-md-2">
-                                    {{ Form::label('webhook_botname', trans('admin/settings/general.webhook_botname',['app' => $webhook_name ])) }}
+                                    <label for="webhook_botname">{{ trans('admin/settings/general.webhook_botname',['app' => $webhook_name ]) }}</label>
                                 </div>
                                 <div class="col-md-9">
                                         <input type="text" wire:model.blur="webhook_botname" class='form-control' placeholder="Snipe-Bot" {{ old('webhook_botname', $webhook_botname)}}{{ Helper::isDemoMode() ? ' disabled' : ''}}>

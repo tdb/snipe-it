@@ -43,16 +43,16 @@ class Asset extends Depreciable
 
     /**
      * Run after the checkout acceptance was declined by the user
-     * 
+     *
      * @param  User   $acceptedBy
      * @param  string $signature
-     */ 
+     */
     public function declinedCheckout(User $declinedBy, $signature)
     {
       $this->assigned_to = null;
       $this->assigned_type = null;
-      $this->accepted = null;      
-      $this->save();        
+      $this->accepted = null;
+      $this->save();
     }
 
     /**
@@ -368,7 +368,7 @@ class Asset extends Depreciable
         if ($this->save()) {
             if (is_int($admin)) {
                 $checkedOutBy = User::findOrFail($admin);
-            } elseif (get_class($admin) === \App\Models\User::class) {
+            } elseif ($admin && get_class($admin) === \App\Models\User::class) {
                 $checkedOutBy = $admin;
             } else {
                 $checkedOutBy = auth()->user();
@@ -411,6 +411,17 @@ class Asset extends Depreciable
     public function validationRules()
     {
         return $this->rules;
+    }
+
+    public function customFieldsForCheckinCheckout($checkin_checkout) {
+        // Check to see if any of the custom fields were included on the form and if they have any values
+        if (($this->model) && ($this->model->fieldset) && ($this->model->fieldset->fields)) {
+            foreach ($this->model->fieldset->fields as $field) {
+                if (($field->{$checkin_checkout} == 1) && (request()->has($field->db_column))){
+                    $this->{$field->db_column} = request()->get($field->db_column);
+                }
+            }
+        }
     }
 
 
@@ -521,6 +532,18 @@ class Asset extends Depreciable
     public function assignedAssets()
     {
         return $this->morphMany(self::class, 'assigned', 'assigned_type', 'assigned_to')->withTrashed();
+    }
+
+    /**
+     * Establishes the accessory -> asset assignment relationship
+     *
+     * @author A. Gianotto <snipe@snipe.net>
+     * @since [v3.0]
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function assignedAccessories()
+    {
+        return $this->morphMany(\App\Models\AccessoryCheckout::class, 'assigned', 'assigned_type', 'assigned_to');
     }
 
 
@@ -1705,7 +1728,7 @@ class Asset extends Depreciable
                         });
                     });
                 }
-            
+
 
             /**
              * THIS CLUNKY BIT IS VERY IMPORTANT
@@ -1726,7 +1749,7 @@ class Asset extends Depreciable
              * assets.location would fail, as that field doesn't exist -- plus we're already searching
              * against those relationships earlier in this method.
              *
-             * - snipe 
+             * - snipe
              *
              */
 

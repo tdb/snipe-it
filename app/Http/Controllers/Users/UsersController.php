@@ -182,11 +182,11 @@ class UsersController extends Controller
      * @internal param int $id
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function edit($id)
+    public function edit(User $user)
     {
 
         $this->authorize('update', User::class);
-        $user = User::with(['assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc'])->withTrashed()->find($id);
+        $user = User::with(['assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc'])->withTrashed()->find($user->id);
 
         if ($user) {
 
@@ -198,7 +198,7 @@ class UsersController extends Controller
             $userPermissions = Helper::selectedPermissionsArray($permissions, $user->permissions);
             $permissions = $this->filterDisplayable($permissions);
 
-            return view('users/edit', compact('user', 'groups', 'userGroups', 'permissions', 'userPermissions'))->with('item', $user);
+            return view('users/edit', compact('user', 'groups', 'userGroups', 'permissions', 'userPermissions'));
         }
 
         return redirect()->route('users.index')->with('error', trans('admin/users/message.user_not_found', compact('id')));
@@ -288,33 +288,31 @@ class UsersController extends Controller
             $user->password = bcrypt($request->input('password'));
         }
 
-
         // Update the location of any assets checked out to this user
         Asset::where('assigned_type', User::class)
             ->where('assigned_to', $user->id)
             ->update(['location_id' => $user->location_id]);
 
-            $permissions_array = $request->input('permission');
+        $permissions_array = $request->input('permission');
 
+        // Strip out the superuser permission if the user isn't a superadmin
+        if (! auth()->user()->isSuperUser()) {
+            unset($permissions_array['superuser']);
+            $permissions_array['superuser'] = $orig_superuser;
+        }
 
-            // Strip out the superuser permission if the user isn't a superadmin
-            if (! auth()->user()->isSuperUser()) {
-                unset($permissions_array['superuser']);
-                $permissions_array['superuser'] = $orig_superuser;
-            }
+        $user->permissions = json_encode($permissions_array);
 
-            $user->permissions = json_encode($permissions_array);
+        // Handle uploaded avatar
+        app(ImageUploadRequest::class)->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
+        session()->put(['redirect_option' => $request->get('redirect_option')]);
 
-            // Handle uploaded avatar
-            app(ImageUploadRequest::class)->handleImages($user, 600, 'avatar', 'avatars', 'avatar');
-            session()->put(['redirect_option' => $request->get('redirect_option')]);
-
-            if ($user->save()) {
-                // Redirect to the user page
-                return redirect()->to(Helper::getRedirectOption($request, $user->id, 'Users'))
-                    ->with('success', trans('admin/users/message.success.update'));
-            }
-            return redirect()->back()->withInput()->withErrors($user->getErrors());
+        if ($user->save()) {
+            // Redirect to the user page
+            return redirect()->to(Helper::getRedirectOption($request, $user->id, 'Users'))
+                ->with('success', trans('admin/users/message.success.update'));
+        }
+        return redirect()->back()->withInput()->withErrors($user->getErrors());
     }
 
     /**
@@ -326,7 +324,7 @@ class UsersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function destroy(DeleteUserRequest $request, $id = null)
+    public function destroy(DeleteUserRequest $request, $id)
     {
         $this->authorize('delete', User::class);
 
@@ -335,13 +333,6 @@ class UsersController extends Controller
             $this->authorize('delete', $user);
 
             if ($user->delete()) {
-                if (Storage::disk('public')->exists('avatars/' . $user->avatar)) {
-                    try {
-                        Storage::disk('public')->delete('avatars/' . $user->avatar);
-                    } catch (\Exception $e) {
-                        Log::debug($e);
-                    }
-                }
                 return redirect()->route('users.index')->with('success', trans('admin/users/message.success.delete'));
             }
         }
@@ -400,23 +391,18 @@ class UsersController extends Controller
      * @return \Illuminate\Contracts\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function show($userId = null)
+    public function show(User $user)
     {
         // Make sure the user can view users at all
         $this->authorize('view', User::class);
 
-        $user = User::with('assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc')->withTrashed()->find($userId);
+        $user = User::with('assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc')->withTrashed()->find($user->id);
 
         // Make sure they can view this particular user
         $this->authorize('view', $user);
 
-        if ($user) {
             $userlog = $user->userlog->load('item');
             return view('users/view', compact('user', 'userlog'))->with('settings', Setting::getSettings());
-        }
-
-        return redirect()->route('users.index')->with('error', trans('admin/users/message.user_not_found', ['id' => $userId]));
-
     }
 
 
@@ -430,7 +416,7 @@ class UsersController extends Controller
      * @return \Illuminate\Contracts\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function getClone(Request $request, $id = null)
+    public function getClone(Request $request, User $user)
     {
         $this->authorize('create', User::class);
 
@@ -440,7 +426,7 @@ class UsersController extends Controller
         app('request')->request->set('permissions', $permissions);
 
 
-        $user_to_clone = User::with('assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc')->withTrashed()->find($id);
+        $user_to_clone = User::with('assets', 'assets.model', 'consumables', 'accessories', 'licenses', 'userloc')->withTrashed()->find($user->id);
         // Make sure they can view this particular user
         $this->authorize('view', $user_to_clone);
 
