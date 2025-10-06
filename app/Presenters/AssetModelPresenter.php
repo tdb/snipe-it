@@ -16,6 +16,7 @@ class AssetModelPresenter extends Presenter
                 'field' => 'checkbox',
                 'checkbox' => true,
                 'titleTooltip' => trans('general.select_all_none'),
+                'printIgnore' => true,
             ],
             [
                 'field' => 'id',
@@ -74,7 +75,10 @@ class AssetModelPresenter extends Presenter
                 'switchable' => true,
                 'title' => trans('mail.min_QTY'),
                 'visible' => true,
+                'formatter' => 'minAmtFormatter',
+                'class' => 'text-right text-padding-number-cell',
             ],
+
             [
                 'field' => 'assets_count',
                 'searchable' => false,
@@ -82,6 +86,38 @@ class AssetModelPresenter extends Presenter
                 'switchable' => true,
                 'title' => trans('admin/models/table.numassets'),
                 'visible' => true,
+                'class' => 'text-right text-padding-number-cell',
+                'footerFormatter' => 'qtySumFormatter',
+            ],
+            [
+                'field' => 'assets_assigned_count',
+                'searchable' => false,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('general.assigned'),
+                'visible' => true,
+                'class' => 'text-right text-padding-number-cell',
+                'footerFormatter' => 'qtySumFormatter',
+            ],
+            [
+                'field' => 'remaining',
+                'searchable' => false,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('general.remaining'),
+                'visible' => true,
+                'class' => 'text-right text-padding-number-cell',
+                'footerFormatter' => 'qtySumFormatter',
+            ],
+            [
+                'field' => 'assets_archived_count',
+                'searchable' => false,
+                'sortable' => true,
+                'switchable' => true,
+                'title' => trans('general.archived'),
+                'visible' => true,
+                'class' => 'text-right text-padding-number-cell',
+                'footerFormatter' => 'qtySumFormatter',
             ],
             [
                 'field' => 'depreciation',
@@ -127,6 +163,14 @@ class AssetModelPresenter extends Presenter
                 'formatter' => 'trueFalseFormatter',
             ],
             [
+                'field' => 'require_serial',
+                'searchable' => false,
+                'sortable' => true,
+                'visible' => false,
+                'title' => trans('admin/hardware/general.require_serial'),
+                'formatter' => 'trueFalseFormatter',
+            ],
+            [
                 'field' => 'notes',
                 'searchable' => true,
                 'sortable' => true,
@@ -169,6 +213,7 @@ class AssetModelPresenter extends Presenter
             'switchable' => false,
             'title' => trans('table.actions'),
             'formatter' => 'modelsActionsFormatter',
+            'printIgnore' => true,
         ];
 
         return json_encode($layout);
